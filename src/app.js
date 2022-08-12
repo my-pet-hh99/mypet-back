@@ -1,5 +1,5 @@
 const express = require("express");
-const { sequelize } = require("../models");
+const { sequelize } = require("./models");
 const cors = require("cors");
 const app = express();
 const port = 3000;
