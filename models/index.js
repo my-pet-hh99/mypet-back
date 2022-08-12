@@ -1,4 +1,7 @@
 "use strict";
+// const User = require("./user");
+// const Post = require("./post");
+// const Comment = require("./comment");
 
 const fs = require("fs");
 const path = require("path");
@@ -43,8 +46,16 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-model.User.associate(db);
-model.Post.associate(db);
-model.Comment.associate(db);
+// db.User = User;
+// db.Post = Post;
+// db.Comment = Comment;
+
+db.User.init(sequelize, Sequelize);
+db.Post.init(sequelize, Sequelize);
+db.Comment.init(sequelize, Sequelize);
+
+db.User.associate(db);
+db.Post.associate(db);
+db.Comment.associate(db);
 
 module.exports = db;
