@@ -6,5 +6,4 @@ const postController = new PostController();
 
 // http://localhost:8080/api/post
 
-router.get("/", postController);
 module.exports = router;

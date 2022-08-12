@@ -10,7 +10,6 @@ module.exports = {
       },
       postId: {
         allowNull: false,
-        foreignKey: true,
         type: Sequelize.INTEGER,
       },
       userId: {
