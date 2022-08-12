@@ -6,5 +6,4 @@ const commentController = new CommentController();
 
 // http://localhost:8080/api/comment
 
-router.get("/", commentController);
 module.exports = router;
