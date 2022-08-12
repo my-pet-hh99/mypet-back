@@ -1,6 +1,6 @@
-/config/config.json
-/config/config.js
-/config/secretKey.js
+/src/config/config.json
+/src/config/config.js
+/src/config/secretKey.js
 
 # Logs
 logs
