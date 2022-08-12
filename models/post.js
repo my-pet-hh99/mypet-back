@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "cascade",
       onDelete: "cascade",
     });
-    Post.hasMany(models.comment, {
+    Post.hasMany(models.Comment, {
       foreignKey: "postId",
       sourceKey: "postId",
       onUpdate: "cascade",
