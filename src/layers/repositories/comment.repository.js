@@ -15,7 +15,7 @@ module.exports = class CommentRepository {
 
         } catch (err){
             console.log(err);
-            return { success : false};
+            return { success : false, message : err.message};
         }
 
     };

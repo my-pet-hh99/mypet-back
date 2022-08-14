@@ -19,7 +19,7 @@ module.exports = class CommentController {
       }).validateAsync({ postId, userId, text });
 
       const result = await this.commentService.createComment(userId, postId, text);
-      return res.status(201).json({ ...result,  message : '댓글 작성이 성공하였습니다.'}) ;
+      return res.status(201).json({ ...result}) ;
 
     } catch(err){
       console.log(err);

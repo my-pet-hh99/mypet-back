@@ -12,7 +12,7 @@ module.exports = class CommentService {
       //const isExistPost = await this.postRepository.isExistPost()
 
       const result = await this.commentRepository.createComment(userId, postId, text);
-      if (result.success === false) throw new Error('댓글 작성에 실패하였습니다.');
+      //if (result.success === false) throw new Error('댓글 작성에 실패하였습니다.');
       return result;
       
     } catch(err){
@@ -66,7 +66,7 @@ module.exports = class CommentService {
 
       //const isExistComment = await this.postRepository.isExistComment()
       const result = await this.commentRepository.deleteComment(commentId);
-      if (result.success === false) throw new Error('댓글 삭제에 실패하엿습니다.');
+      //if (result.success === false) throw new Error('댓글 삭제에 실패하엿습니다.');
       return result;
       
     } catch(err){
