@@ -19,11 +19,11 @@ module.exports = class CommentController {
       }).validateAsync({ postId, userId, text });
 
       const result = await this.commentService.createComment(userId, postId, text);
-      return res.status(201).json({ ...result,  message : '댓글 작성이 성공하였습니다.'}) ;
+      return res.status(201).json({ ...result}) ;
 
     } catch(err){
       console.log(err);
-      return res.status(400).json(err.message);
+      return res.status(400).json({ success : false, message : err.message });
     }
 
   };
@@ -42,7 +42,7 @@ module.exports = class CommentController {
 
     } catch(err){
       console.log(err);
-      return res.status(400).json(err.message);
+      return res.status(400).json({ success : false, message : err.message});
     }
 
 
@@ -66,7 +66,7 @@ module.exports = class CommentController {
 
     } catch(err){
       console.log(err);
-      return res.status(400).json(err.message);
+      return res.status(400).json({ success : false, message : err.message});
     }
 
 
@@ -88,7 +88,7 @@ module.exports = class CommentController {
 
     } catch(err){
       console.log(err);
-      return res.status(400).json(err.message);
+      return res.status(400).json({ success : false, message : err.message});
     }
 
   };
