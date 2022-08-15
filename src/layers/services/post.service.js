@@ -11,6 +11,7 @@ class PostService {
 
     return allPost.map(post => {
       return {
+        author: post.User.nickname,
         postId: post.posdId,
         text: post.text,
         imageUrl: post.imageUrl,
