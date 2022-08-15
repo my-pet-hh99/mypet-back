@@ -7,6 +7,7 @@ const postController = new PostController();
 
 router.get('/', postController.getPosts)
 router.post('/', postController.createPost)
+router.put('/:postId', postController.updatePost)
 router.delete('/:postId', postController.deletePost)
 
 

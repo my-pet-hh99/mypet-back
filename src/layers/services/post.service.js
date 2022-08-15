@@ -26,6 +26,14 @@ class PostService {
     };
   }
 
+  updatePost = async (postId, text) => {
+    const updatePostData = await this.postRepository.updatePost(postId, text)
+
+    return {
+      result: true
+    }
+  }
+
   deletePost = async (postId) => {
     const deletePostData = await this.postRepository.deletePost(postId)
 
@@ -33,6 +41,8 @@ class PostService {
       result: true
     }
   }
+
+  
 }
 
 module.exports =  PostService;

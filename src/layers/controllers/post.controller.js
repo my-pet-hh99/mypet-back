@@ -17,6 +17,15 @@ class PostController {
     const createPostData = await this.postService.createPost(userId, imageUrl, text);
 
     res.status(201).json({ data: createPostData });
+    
+  }
+
+  updatePost = async (req, res, next) => {
+    const postId = Number(req.params.postId);
+    const text = req.body.text;
+    const updatePostData = await this.postService.updatePost(postId, text);
+
+    res.json({ message: `${postId} 번째 게시물 수정` });
   }
 
   deletePost = async (req, res, next) => {
