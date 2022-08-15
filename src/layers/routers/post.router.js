@@ -5,8 +5,9 @@ const router = express.Router();
 const PostController = require("../controllers/post.controller");
 const postController = new PostController();
 
-router.get('/',postController.getPosts)
-router.post('/',postController.createPost)
+router.get('/', postController.getPosts)
+router.post('/', postController.createPost)
+router.delete('/:postId', postController.deletePost)
 
 
 // http://localhost:8080/api/post

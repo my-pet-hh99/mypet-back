@@ -4,17 +4,17 @@ const PostRepository = require("../repositories/post.repository");
 class PostService {
   postRepository = new PostRepository();
 
-  findAllPost = async () => {
-    const allPost = await this.postRepository.findAllPost();
-
-    console.log(allPost);
+  findAllPost = async (offset) => {
+    const allPost = await this.postRepository.findAllPost(offset);
 
     return allPost.map(post => {
       return {
-        author: post.User.nickname,
-        postId: post.posdId,
-        text: post.text,
+        postId: post.postId,
         imageUrl: post.imageUrl,
+        text: post.text,
+        author: post.User.nickname,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
       }
     })
   }
@@ -24,6 +24,14 @@ class PostService {
     return {
       result: true
     };
+  }
+
+  deletePost = async (postId) => {
+    const deletePostData = await this.postRepository.deletePost(postId)
+
+    return {
+      result: true
+    }
   }
 }
 

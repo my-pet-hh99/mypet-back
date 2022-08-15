@@ -2,7 +2,7 @@ const { Post } = require("../../models");
 const { User } = require("../../models");
 
 class PostRepository {
-    findAllPost = async () => {
+    findAllPost = async (offset) => {
         const posts = await Post.findAll({
             include: [
                 {
@@ -10,21 +10,29 @@ class PostRepository {
                   attributes: ['email', 'nickname'],
                 }
              ],
+             limit:3,
+             offset:offset,
         });
 
-        // console.log(posts[0].User)
+
         return posts;
     }
     createPost = async (userId, imageUrl,text) => {
-        const createPost = await Post.create({
+        const createPostData = await Post.create({
             userId,
             imageUrl,
             text,
         });
 
-        console.log(createPost)
+        return createPostData;
+    }
 
-        return createPost;
+    deletePost = async (postId) => {
+        const deletePostData = Post.destroy({
+            where: {postId},
+        });
+
+        return deletePostData;
     }
 }
 
