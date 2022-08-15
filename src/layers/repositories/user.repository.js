@@ -1,8 +1,8 @@
-const { User, Sessions } = require("../../models");
+const { User, Session } = require("../../models");
 
-class UserRepository {
-  createUsers = async (email, nickname, password) => {
-    const createUsersData = await Users.create({
+module.exports = class UserRepository {
+  createUser = async (email, nickname, password) => {
+    const createUsersData = await User.create({
       email,
       nickname,
       password,
@@ -10,9 +10,7 @@ class UserRepository {
 
     return createUsersData;
   };
-}
 
-module.exports = class UserRepository {
   findUserById = async (userId) => {
     const user = await User.findByPk(userId);
 
@@ -27,33 +25,42 @@ module.exports = class UserRepository {
     return user;
   };
 
-  findUserByNN = async (nickname) => {
+  findUserByMail = async (email) => {
     const user = await User.findOne({
-      where: { nickname },
+      where: { email },
     });
 
     return user;
   };
 
-  createUser = async (email, nickname, password, answer) => {
-    const user = await User.create({ email, nickname, password, answer });
-    return user;
+  // findUserByNN = async (nickname) => {
+  //   const user = await User.findOne({
+  //     where: { nickname },
+  //   });
+
+  //   return user;
+  // };
+
+  deleteUser = async (userId) => {
+    const success = await User.destroy({ where: userId });
+
+    return success;
   };
 
   createSession = async (userId) => {
-    const session = await Sessions.create({ userId });
+    const session = await Session.create({ userId });
 
     return session;
   };
 
   findSession = async (sessionId) => {
-    const session = await Sessions.findByPk(sessionId);
+    const session = await Session.findByPk(sessionId);
 
     return session;
   };
 
   deleteSession = async (sessionId) => {
-    const success = await Sessions.destroy({ where: sessionId });
+    const success = await Session.destroy({ where: sessionId });
 
     return success;
   };

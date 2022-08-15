@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Post extends Model {
+  class Session extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,34 +11,26 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Post.init(
+  Session.init(
     {
-      postId: {
+      sessionId: {
         primaryKey: true,
         type: DataTypes.INTEGER,
         autoIncrement: true,
       },
-      imageUrl: DataTypes.STRING,
-      text: DataTypes.STRING,
     },
     {
       sequelize,
-      modelName: "Post",
+      modelName: "Session",
     }
   );
-  Post.associate = function (models) {
-    Post.belongsTo(models.User, {
+  Session.associate = function (models) {
+    Session.belongsTo(models.User, {
       foreignKey: "userId",
       targetKey: "userId",
       onUpdate: "cascade",
       onDelete: "cascade",
     });
-    Post.hasMany(models.Comment, {
-      foreignKey: "postId",
-      sourceKey: "postId",
-      onUpdate: "cascade",
-      onDelete: "cascade",
-    });
   };
-  return Post;
+  return Session;
 };
