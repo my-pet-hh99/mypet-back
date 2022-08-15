@@ -2,6 +2,20 @@ const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
 
+class UserService {
+  usersRepository = new UsersRepository();
+
+  createUsers = async (email, nickname, password) => {
+    const userCreateData = await this.usersRepository.createUsers(
+      email,
+      nickname,
+      password
+    );
+
+    return userCreateData;
+  };
+}
+
 module.exports = class UserService {
   userRepository = new UserRepository();
 

@@ -1,5 +1,17 @@
 const { User, Sessions } = require("../../models");
 
+class UserRepository {
+  createUsers = async (email, nickname, password) => {
+    const createUsersData = await Users.create({
+      email,
+      nickname,
+      password,
+    });
+
+    return createUsersData;
+  };
+}
+
 module.exports = class UserRepository {
   findUserById = async (userId) => {
     const user = await User.findByPk(userId);

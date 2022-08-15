@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       commentId: {
         primaryKey: true,
         type: DataTypes.INTEGER,
+        autoIncrement: true,
       },
       text: DataTypes.STRING,
     },

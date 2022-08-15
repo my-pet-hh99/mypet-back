@@ -7,23 +7,23 @@ module.exports = class CommentController {
   createComment = async (req, res, next) => {
     
     const { postId } = req.params;
-    const { content } = req.body;
+    const { text } = req.body;
     const userId = 1;
     try {
 
       await joi.object({
         userId : joi.number().required(),
         postId : joi.number().required(),
-        content : joi.string().required()
+        text : joi.string().max(150).required()
 
-      }).validateAsync({ postId, userId, content });
+      }).validateAsync({ postId, userId, text });
 
-      const result = this.commentService.createComment(userId, postId, content);
-      return res.status(201).json('댓글 작성이 성공하였습니다.');
+      const result = await this.commentService.createComment(userId, postId, text);
+      return res.status(201).json({ ...result}) ;
 
     } catch(err){
       console.log(err);
-      return res.status(400).json('댓글 작성이 실패하였습니다.');
+      return res.status(400).json({ success : false, message : err.message });
     }
 
   };
@@ -37,12 +37,12 @@ module.exports = class CommentController {
 
       }).validateAsync({ postId});
 
-      const result = this.commentService.createComment(postId);
-      return res.status(201).json('댓글 조회가 성공하였습니다.');
+      const result = await this.commentService.getComment(postId);
+      return res.status(201).json(result) ;
 
     } catch(err){
       console.log(err);
-      return res.status(400).json('댓글 조회가 실패하였습니다.');
+      return res.status(400).json({ success : false, message : err.message});
     }
 
 
@@ -50,23 +50,23 @@ module.exports = class CommentController {
   updateComment = async (req, res, next) => {
 
     const { commentId } = req.params;
-    const { content } = req.body;
+    const { text } = req.body;
     const userId = 1;
     try {
 
       await joi.object({
         userId : joi.number().required(),
         commentId : joi.number().required(),
-        content : joi.string().required()
+        text : joi.string().max(150).required()
 
-      }).validateAsync({ commentId, userId, content });
+      }).validateAsync({ commentId, userId, text });
 
-      const result = this.commentService.createComment(userId, commentId, content);
-      return res.status(201).json('댓글 수정이 성공하였습니다.');
+      const result = await this.commentService.updateComment(userId, commentId, text);
+      return res.status(201).json( result);
 
     } catch(err){
       console.log(err);
-      return res.status(400).json('댓글 수정이 실패하였습니다.');
+      return res.status(400).json({ success : false, message : err.message});
     }
 
 
@@ -81,14 +81,14 @@ module.exports = class CommentController {
         userId : joi.number().required(),
         commentId : joi.number().required(),
 
-      }).validateAsync({ postId, userId });
+      }).validateAsync({ commentId, userId });
 
-      const result = this.commentService.createComment(userId, commentId);
-      return res.status(201).json('댓글 삭제가 성공하였습니다.');
+      const result = await this.commentService.deleteComment(userId, commentId);
+      return res.status(201).json(result);
 
     } catch(err){
       console.log(err);
-      return res.status(400).json('댓글 삭제가 실패하였습니다.');
+      return res.status(400).json({ success : false, message : err.message});
     }
 
   };
