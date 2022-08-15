@@ -6,10 +6,19 @@ class PostService {
 
   findAllPost = async () => {
     const allPost = await this.postRepository.findAllPost();
+
     console.log(allPost);
+
+    return allPost.map(post => {
+      return {
+        postId: post.posdId,
+        text: post.text,
+        imageUrl: post.imageUrl,
+      }
+    })
   }
-  createPost = async () => {
-    const createPostData = await this.postRepository.createPost(imageUrl, text);
+  createPost = async (userId, imageUrl, text) => {
+    const createPostData = await this.postRepository.createPost(userId, imageUrl, text);
 
     return {
       result: true
