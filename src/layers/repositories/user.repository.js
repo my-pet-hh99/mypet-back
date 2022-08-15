@@ -37,7 +37,6 @@ module.exports = class UserRepository {
 
   createUser = async (email, nickname, password, answer) => {
     const user = await User.create({ email, nickname, password, answer });
-
     return user;
   };
 

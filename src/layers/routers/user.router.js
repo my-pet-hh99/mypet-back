@@ -7,6 +7,6 @@ const userController = new UserController();
 // http://localhost:8080/api/user
 
 router.post("/login", userController.login);
-router.post("/token", userController);
+router.post("/token", userController.logout);
 
 module.exports = router;

@@ -2,22 +2,65 @@ const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
 
-class UserService {
-  usersRepository = new UsersRepository();
-
-  createUsers = async (email, nickname, password) => {
-    const userCreateData = await this.usersRepository.createUsers(
-      email,
-      nickname,
-      password
-    );
-
-    return userCreateData;
-  };
-}
-
 module.exports = class UserService {
   userRepository = new UserRepository();
+
+  createUsers = async (email, nickname, password, answer) => {
+    const emailVal = $("#email").val();
+    const re_nickname = /^[a-zA-Z0-9]{3,10}$/;
+    const re_password = /^[a-zA-Z0-9]{4,30}$/;
+    const regExp =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+    if (emailVal.match(regExp) == null) {
+      return { status: 400, result: false, message: "이메일 형식이 아닙니다" };
+      // res.status(412).send({
+      //   errorMessage: "이메일 형식이 아닙니다.",
+      // });
+    }
+    if (password !== confirm) {
+      return {
+        status: 400,
+        result: false,
+        message: "패스워드가 일치하지 않습니다.",
+      };
+      // res.status(412).send({
+      //   errorMessage: "패스워드가 일치하지 않습니다.",
+      // });
+    }
+
+    if (nickname.search(re_nickname) === -1) {
+      return res.status(412).send({
+        errorMessage: "nickname의 형식이 일치하지 않습니다.",
+      });
+    }
+
+    if (password.search(re_password) === -1) {
+      return res.status(412).send({
+        errorMessage: "패스워드 형식이 일치하지 않습니다.",
+      });
+    }
+    const user = await Users.findAll({
+      attributes: ["userId"],
+      where: { nickname },
+    });
+
+    if (user.length) {
+      return res.status(412).send({
+        errorMessage: "중복된 닉네임입니다.",
+      });
+    }
+    // console.log(Users)
+
+    const userCreateData = await this.userRepository.createUser(
+      email,
+      nickname,
+      password,
+      answer
+    );
+
+    return { status: 201, result: true, data: userCreateData };
+  };
 
   login = async (email, password) => {
     if (!email || !password) {
@@ -66,7 +109,7 @@ module.exports = class UserService {
 
       return { status: 201, result: true };
     } catch (err) {
-      return { status: 401, result: false, messege: "" };
+      return { status: 401, result: false, message: "" };
     }
   };
 
@@ -79,7 +122,7 @@ module.exports = class UserService {
       );
 
       if (!session) {
-        return { status: 401, result: false, messege: "" };
+        return { status: 401, result: false, message: "" };
       }
 
       const accessInfo = jwt.decode(accessToken);
@@ -87,7 +130,7 @@ module.exports = class UserService {
 
       return { status: 201, result: true, data: newAccessToken };
     } catch (err) {
-      return { status: 401, result: false, messege: "" };
+      return { status: 401, result: false, message: "" };
     }
   };
 };
