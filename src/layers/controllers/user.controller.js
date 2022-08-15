@@ -1,76 +1,75 @@
 const UserService = require("../services/user.service");
-createUsers = async (req, res) => {
-  const { email, nickname, password } = req.body;
-
-  const emailVal = $("#email").val();
-  const re_nickname = /^[a-zA-Z0-9]{3,10}$/;
-  const re_password = /^[a-zA-Z0-9]{4,30}$/;
-  const regExp =
-    /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-
-  if (emailVal.match(regExp) == null) {
-    return res.status(412).send({
-      errorMessage: "이메일 형식이 아닙니다.",
-    });
-  }
-  if (password !== confirm) {
-    return res.status(412).send({
-      errorMessage: "패스워드가 일치하지 않습니다.",
-    });
-  }
-
-  if (nickname.search(re_nickname) === -1) {
-    return res.status(412).send({
-      errorMessage: "nickname의 형식이 일치하지 않습니다.",
-    });
-  }
-
-  if (password.search(re_password) === -1) {
-    return res.status(412).send({
-      errorMessage: "패스워드 형식이 일치하지 않습니다.",
-    });
-  }
-  const user = await Users.findAll({
-    attributes: ["userId"],
-    where: { nickname },
-  });
-  console.log(user);
-
-  if (user.length) {
-    return res.status(412).send({
-      errorMessage: "중복된 닉네임입니다.",
-    });
-  }
-  // console.log(Users)
-  await Users.create({ email, nickname, password });
-  console.log(`${nickname} 님이 가입하셨습니다.`);
-
-  return res.status(201).json({ message: "회원 가입에 성공하였습니다." });
-};
-
 module.exports = class UserController {
   userService = new UserService();
+
+  signup = async (req, res) => {
+    const { email, nickname, password, confirm, answer } = req.body;
+
+    const response = await this.userService.signup(
+      email,
+      nickname,
+      password,
+      confirm,
+      answer
+    );
+
+    return res.status(response.status).json({
+      result: response.result,
+      data: response.data,
+      message: response.message,
+    });
+  };
+
+  checkEmail = async (req, res) => {
+    const { email } = req.params;
+
+    const response = await this.userService.checkEmail(email);
+
+    res.status().json({});
+  };
 
   login = async (req, res) => {
     const { email, password } = req.body;
 
     const response = await this.userService.login(email, password);
 
-    res
-      .status(response.status)
-      .json(
-        response.result,
-        response.result ? response.data : response.messege
-      );
+    res.status(response.status).json({
+      result: response.result,
+      data: response.data,
+      message: response.message,
+    });
   };
 
   logout = async (req, res) => {
-    const { sessionId } = req.body;
+    const { sessionId } = res.locals;
+
+    const response = await this.userService.logout();
+
+    res.status(response.status).json({
+      result: response.result,
+      data: response.data,
+      message: response.message,
+    });
   };
 
   reIssue = async (req, res) => {
-    const { refreshToken, accessToken } = req.header.common;
+    const { refreshToken, accessToken } = req.header.authorization;
 
-    const response = await this.userService;
+    const response = await this.userService.reIssue(refreshToken, accessToken);
+
+    res.status(response.status).json({
+      result: response.result,
+      data: response.data,
+      message: response.message,
+    });
   };
+
+  // editUserInfo = async (req, res) => {
+  //   const { userId } = res.locals;
+  //   const { nickname, password, answer } = req.body;
+
+  //   const response = await this.userService;
+
+  //   res.status()
+  // };
 };

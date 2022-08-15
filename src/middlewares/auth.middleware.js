@@ -1,9 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { Access } = require("../config/secretKey");
-// const { User } = require("../../models");
 
 module.exports = (req, res, next) => {
-  const { accessToken } = req.headers.common;
+  const token = req.headers.authorization;
 
   try {
     const tokenValue = jwt.verify(accessToken, Access.Secret);
