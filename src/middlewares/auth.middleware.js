@@ -1,8 +1,18 @@
-const key = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
-const { User } = require("../../models");
+const { Access } = require("../config/secretKey");
+// const { User } = require("../../models");
 
 module.exports = (req, res, next) => {
-  const authorization = req.headers.cookie;
-  next();
+  const { accessToken } = req.headers.common;
+
+  try {
+    const tokenValue = jwt.verify(accessToken, Access.Secret);
+
+    res.locals.userId = tokenValue.userId;
+    res.locals.nickname = tokenValue.nickname;
+
+    next();
+  } catch (err) {
+    res.status(401).json({ result: false, messege: "fail" });
+  }
 };
