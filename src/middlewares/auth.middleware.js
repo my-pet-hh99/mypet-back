@@ -2,9 +2,12 @@ const jwt = require("jsonwebtoken");
 const { Access } = require("../config/secretKey");
 
 module.exports = (req, res, next) => {
-  const { accessToken } = req.headers.authorization;
+  const token = req.headers.authorization;
+   [type, accessToken]  = token.split(' ');
 
   try {
+    if ( !accessToken ||type !== 'Bearer') throw Error();
+  
     const tokenValue = jwt.verify(accessToken, Access.Secret);
 
     res.locals.userId = tokenValue.userId;
