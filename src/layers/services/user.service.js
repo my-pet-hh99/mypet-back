@@ -119,6 +119,7 @@ module.exports = class UserService {
     }
 
     const user = await this.userRepository.findUserByMail(email);
+    console.log(user.dataValues.userId);
     const hashedpassword = user?.dataValues.password;
     const comparePassword = await bcrypt.compare(password, hashedpassword);
     if (!comparePassword) {

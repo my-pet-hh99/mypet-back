@@ -14,7 +14,6 @@ module.exports = class CommentService {
 
       const user = await this.userRepository.findUserById(userId);
       if (user === null) throw new Error('존재하지 않는 사용자입니다.');
-      console.log(user);
 
       //const isExistPost = await this.postRepository.isExistPost()
 
@@ -65,12 +64,16 @@ module.exports = class CommentService {
 
     try {
 
-      const isExistComment = await this.commentRepository.isExistComment(commentId);
-      if (isExistComment === null) throw new Error('해당 댓글이 존재하지 않습니다');
+      const user = await this.userRepository.findUserById(userId);
+      if (user === null) throw new Error('존재하지 않는 사용자입니다.');
+      
+      const comment = await this.commentRepository.getCommentById(commentId);
+      if (comment === null) throw new Error('해당 댓글이 존재하지 않습니다.');
+      else if (userId !== comment.userId) throw new Error('권한이 없는 사용자입니다.');
 
-      const comment = await this.commentRepository.updateComment(commentId, text);
-      if (comment.result === false) throw new Error('댓글 수정에 실패하엿습니다.');
-      return { result : comment.result };
+      const isUpdated = await this.commentRepository.updateComment(commentId, text);
+      if (isUpdated.result === false) throw new Error('댓글 수정에 실패하엿습니다.');
+      return { result : isUpdated.result };
       
       
     } catch(err){
@@ -84,13 +87,16 @@ module.exports = class CommentService {
   deleteComment = async (userId, commentId) => {
 
     try {
+      const user = await this.userRepository.findUserById(userId);
+      if (user === null) throw new Error('존재하지 않는 사용자입니다.');
+      
+      const comment = await this.commentRepository.getCommentById(commentId);
+      if (comment === null) throw new Error('해당 댓글이 존재하지 않습니다.');
+      else if (userId !== comment.userId) throw new Error('권한이 없는 사용자입니다.');
 
-      const isExistComment = await this.commentRepository.isExistComment(commentId);
-      if (isExistComment === null) throw new Error('해당 댓글이 존재하지 않습니다.');
-
-      const comment = await this.commentRepository.deleteComment(commentId);
-      if (comment.result === false) throw new Error('댓글 삭제에 실패하엿습니다.');
-      return { result : comment.result };
+      const isDeleted = await this.commentRepository.deleteComment(commentId);
+      if (isDeleted.result === false) throw new Error('댓글 삭제에 실패하엿습니다.');
+      return { result : isDeleted.result };
       
     } catch(err){
 
