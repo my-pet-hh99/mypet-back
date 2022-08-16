@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 const { Access } = require("../config/secretKey");
-// const { User } = require("../../models");
 
-module.exports = (req, res, next) => {
-  const { accessToken } = req.headers.common;
+module.exports  = (req, res, next) => {
+  const token = req.headers.authorization;
+   [type, accessToken]  = token.split(' ');
 
   try {
+    if ( !accessToken ||type !== 'Bearer') throw Error();
+  
     const tokenValue = jwt.verify(accessToken, Access.Secret);
 
     res.locals.userId = tokenValue.userId;
@@ -13,6 +15,8 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(401).json({ result: false, messege: "fail" });
+    res
+      .status(401)
+      .json({ result: false, messege: "토큰이 유효하지 않습니다." });
   }
 };

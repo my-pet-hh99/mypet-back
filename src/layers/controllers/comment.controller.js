@@ -8,7 +8,8 @@ module.exports = class CommentController {
     
     const { postId } = req.params;
     const { text } = req.body;
-    const userId = 1;
+    const { userId } = res.locals;
+
     try {
 
       await joi.object({
@@ -18,12 +19,12 @@ module.exports = class CommentController {
 
       }).validateAsync({ postId, userId, text });
 
-      const result = await this.commentService.createComment(userId, postId, text);
-      return res.status(201).json({ ...result}) ;
+      const comment = await this.commentService.createComment(userId, postId, text);
+      return res.status(201).json(comment);
 
     } catch(err){
       console.log(err);
-      return res.status(400).json({ success : false, message : err.message });
+      return res.status(400).json({ result : false, message : err.message });
     }
 
   };
@@ -37,12 +38,12 @@ module.exports = class CommentController {
 
       }).validateAsync({ postId});
 
-      const result = await this.commentService.getComment(postId);
-      return res.status(201).json(result) ;
+      const comment = await this.commentService.getComment(postId);
+      return res.status(201).json(comment) ;
 
     } catch(err){
       console.log(err);
-      return res.status(400).json({ success : false, message : err.message});
+      return res.status(400).json({ result : false, message : err.message});
     }
 
 
@@ -51,7 +52,8 @@ module.exports = class CommentController {
 
     const { commentId } = req.params;
     const { text } = req.body;
-    const userId = 1;
+    const { userId } = res.locals;
+
     try {
 
       await joi.object({
@@ -61,12 +63,12 @@ module.exports = class CommentController {
 
       }).validateAsync({ commentId, userId, text });
 
-      const result = await this.commentService.updateComment(userId, commentId, text);
-      return res.status(201).json( result);
+      const comment = await this.commentService.updateComment(userId, commentId, text);
+      return res.status(201).json( comment);
 
     } catch(err){
       console.log(err);
-      return res.status(400).json({ success : false, message : err.message});
+      return res.status(400).json({ result : false, message : err.message});
     }
 
 
@@ -74,7 +76,8 @@ module.exports = class CommentController {
   deleteComment = async (req, res, next) => {
 
     const { commentId } = req.params;
-    const userId = 1;
+    const { userId } = res.locals;
+
     try {
 
       await joi.object({
@@ -83,12 +86,12 @@ module.exports = class CommentController {
 
       }).validateAsync({ commentId, userId });
 
-      const result = await this.commentService.deleteComment(userId, commentId);
-      return res.status(201).json(result);
+      const comment = await this.commentService.deleteComment(userId, commentId);
+      return res.status(201).json(comment);
 
     } catch(err){
       console.log(err);
-      return res.status(400).json({ success : false, message : err.message});
+      return res.status(400).json({ result : false, message : err.message});
     }
 
   };

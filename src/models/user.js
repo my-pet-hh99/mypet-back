@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       userId: {
         primaryKey: true,
         type: DataTypes.INTEGER,
+        autoIncrement: true,
       },
       email: DataTypes.STRING,
       nickname: DataTypes.STRING,
@@ -35,6 +36,12 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "cascade",
     });
     User.hasMany(models.Comment, {
+      foreignKey: "userId",
+      sourceKey: "userId",
+      onUpdate: "cascade",
+      onDelete: "cascade",
+    });
+    User.hasMany(models.Session, {
       foreignKey: "userId",
       sourceKey: "userId",
       onUpdate: "cascade",
