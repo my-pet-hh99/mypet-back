@@ -9,11 +9,11 @@
 | 액세스 토큰 발급  | POST /api/user/token            | -         | -                |  |
 | 로그아웃          | GET /api/user/logout            | -         | -                |  |
 | 사진 업로드       | POST /api/image                 | O         | O                |  |
-| 게시글 작성       | POST /api/post                  | O         | O                |  |
-| 게시글 전체 조회  | GET /api/post?offset=(0,1,2...) | -         | -                |   |
-| 게시글 조회       | Get /api/post/:postId           | -         | -                |  |
-| 게시글 수정       | PUT /api/post/:postId           | O         | O                |  |
-| 게시글 삭제       | DELETE /api/post/:postId        | -         | O                |  |
+| 게시글 작성       | POST /api/post                  | O         | O                | @oddythecreative |
+| 게시글 전체 조회  | GET /api/post?offset=(0,1,2...) | -         | -                |  @oddythecreative |
+| 게시글 조회       | Get /api/post/:postId           | -         | -                | @oddythecreative |
+| 게시글 수정       | PUT /api/post/:postId           | O         | O                | @oddythecreative |
+| 게시글 삭제       | DELETE /api/post/:postId        | -         | O                | @oddythecreative |
 | 댓글 조회         | GET /api/comment/:postId        | -         | -                | @codeing999 |
 | 댓글 작성         | POST /api/comment/:postId       | O         | O                | @codeing999 |
 | 댓글 수정         | PUT /api/comment/:commentId      | O         | O               | @codeing999 |
