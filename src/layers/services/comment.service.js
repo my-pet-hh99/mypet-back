@@ -20,10 +20,6 @@ module.exports = class CommentService {
       const isCreated = await this.commentRepository.createComment(userId, postId, text);
       if (isCreated.result === false) throw new Error('댓글 작성에 실패하였습니다.');
 
-      // const comment = await this.commentRepository.getComment(postId);
-      // if (comment.result === false) throw new Error('댓글은 작성되었으나 댓글 목록 조회에 실패하였습니다.');
-
-      //return { result : isCreated.result, data : comment.data};
       return { result : isCreated.result };
       
     } catch(err){
@@ -53,8 +49,7 @@ module.exports = class CommentService {
         }
 
       })
-      return { result : comment.result, data : commentdata};
-      
+      return { result : comment.result, data : commentdata};     
       
     } catch(err){
 
