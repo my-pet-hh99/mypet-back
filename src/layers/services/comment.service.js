@@ -41,7 +41,19 @@ module.exports = class CommentService {
 
       const comment = await this.commentRepository.getComment(postId);
       if (comment.result === false) throw new Error('댓글 목록 조회에 실패하였습니다.');
-      return { result : comment.result };
+      const commentdata = comment.data.map(data => {
+        return {
+          commentId : data.commentId,
+          text : data.text,
+          createdAt : data.createdAt,
+          updatedAt : data.updatedAt,
+          userId : data.userId,
+          postId : data.postId,
+          author : data['User.nickname']
+        }
+
+      })
+      return { result : comment.result, data : commentdata};
       
       
     } catch(err){

@@ -5,7 +5,7 @@ module.exports = class UserController {
   signup = async (req, res) => {
     const { email, nickname, password, confirm, answer } = req.body;
 
-    const response = await this.userService.signup(
+    const response = await this.userService.createUsers(
       email,
       nickname,
       password,

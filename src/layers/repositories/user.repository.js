@@ -19,12 +19,6 @@ module.exports = class UserRepository {
     return user;
   };
 
-  findUserbyEmail = async (email) => {
-    const user = await User.findOne({
-      where: { email },
-    });
-  };
-
   findUserLogin = async (email, password) => {
     const user = await User.findOne({
       where: { email, password },

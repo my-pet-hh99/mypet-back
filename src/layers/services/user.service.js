@@ -1,10 +1,12 @@
 const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
-const e = require("express");
+const bcrypt = require("bcrypt");
+const Bcrypt = require('../../modules/bcrypt');
 
 module.exports = class UserService {
   userRepository = new UserRepository();
+  bcrypt = new Bcrypt();
 
   createUsers = async (email, nickname, password, confirm, answer) => {
     if (!email || !nickname || !password || !confirm || !answer) {
@@ -56,7 +58,7 @@ module.exports = class UserService {
         message: "패스워드 형식을 확인해 주세요.",
       };
     }
-    const existEmail = await this.userRepository.findUserbyEmail(email);
+    const existEmail = await this.userRepository.findUserByMail(email);
     if (existEmail) {
       return {
         status: 400,
@@ -65,7 +67,7 @@ module.exports = class UserService {
       };
     }
 
-    if (nickname.length < 10 || nickname.length > 1) {
+    if ( nickname.length > 10 || nickname.length < 1 ) {
       return {
         status: 400,
         result: false,
@@ -73,19 +75,12 @@ module.exports = class UserService {
       };
     }
 
-    const existUser = await this.userRepository.findUserByMail(email);
-    if (existUser) {
-      return {
-        status: 400,
-        result: false,
-        message: "중복된 이메일입니다.",
-      };
-    }
+    const hashedpassword = await this.bcrypt.bcryptPassword(password);
 
     const userCreateData = await this.userRepository.createUser(
       email,
       nickname,
-      password,
+      hashedpassword,
       answer
     );
 
@@ -130,14 +125,16 @@ module.exports = class UserService {
       return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
 
-    const user = await this.userRepository.findUserLogin(email, password);
-    if (!user) {
+    const user = await this.userRepository.findUserByMail(email);
+    const hashedpassword = user?.dataValues.password;
+    const comparePassword = await bcrypt.compare(password, hashedpassword);
+    if (!comparePassword) {
       return {
         status: 400,
         result: false,
-        message: "존재하지 않는 정보입니다.",
+        message: "비밀번호가 틀렸습니다.",
       };
-    }
+    };
 
     const existSession = await this.userRepository.findSessionByUserId(
       user.userId
@@ -153,7 +150,7 @@ module.exports = class UserService {
       Refresh.Secret,
       Refresh.Option
     );
-
+    
     await this.userRepository.createSession(user.userId, refreshToken);
 
     const accessToken = jwt.sign(
@@ -164,7 +161,7 @@ module.exports = class UserService {
       Access.Secret,
       Access.Option
     );
-
+    
     return { status: 201, result: true, data: { refreshToken, accessToken } };
   };
 
