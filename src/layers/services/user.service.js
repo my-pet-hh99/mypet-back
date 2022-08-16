@@ -5,18 +5,18 @@ const jwt = require("jsonwebtoken");
 module.exports = class UserService {
   userRepository = new UserRepository();
 
-  createUsers = async (email, nickname, password, answer) => {
-    const emailVal = $("#email").val();
-    const re_nickname = /^[a-zA-Z0-9]{3,10}$/;
-    const re_password = /^[a-zA-Z0-9]{4,30}$/;
-    const regExp =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+  createUsers = async (email, nickname, password, confirm, answer) => {
+    if (!email || !nickname || !password || !confirm || !answer) {
+      return { status: 400, result: false, message: "입력칸이 비어 있습니다." };
+    }
 
-    if (emailVal.match(regExp) == null) {
+    const pwExp =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+    const emailExp =
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
+
+    if (!emailExp.test(email)) {
       return { status: 400, result: false, message: "이메일 형식이 아닙니다" };
-      // res.status(412).send({
-      //   errorMessage: "이메일 형식이 아닙니다.",
-      // });
     }
     if (password !== confirm) {
       return {
@@ -24,53 +24,32 @@ module.exports = class UserService {
         result: false,
         message: "패스워드가 일치하지 않습니다.",
       };
-      // res.status(412).send({
-      //   errorMessage: "패스워드가 일치하지 않습니다.",
-      // });
     }
 
-    if (nickname.search(re_nickname) === -1) {
+    if (nickname.length > 10 || nickname.length < 1) {
       return {
         status: 400,
         result: false,
-        message: "nickname의 형식이 일치하지 않습니다.",
+        message: "닉네임의 형식을 확인해 주세요.",
       };
-
-      // res.status(412).send({
-      //   errorMessage: "nickname의 형식이 일치하지 않습니다.",
-      // });
     }
 
-    if (password.search(re_password) === -1) {
+    if (pwExp.test(password)) {
       return {
         status: 400,
         result: false,
-        message: "패스워드 형식이 일치하지 않습니다.",
+        message: "패스워드 형식을 확인해 주세요.",
       };
     }
-
-    //   res.status(412).send({
-    //     errorMessage: "패스워드 형식이 일치하지 않습니다.",
-    //   });
-
-    const user = await Users.findAll({
-      attributes: ["userId"],
-      where: { nickname },
-    });
-
-    if (user.length) {
+    ///여기까지 확인
+    const existEmail = await this.userRepository.findUserbyEmail(email);
+    if (existEmail) {
       return {
         status: 400,
         result: false,
-        message: "중복된 닉네임입니다.",
+        message: "이미 존재하는 이메일 입니다.",
       };
-
-      // res.status(412).send({
-      //   errorMessage: "중복된 닉네임입니다.",
-      // });
     }
-    // console.log(Users)
-
     const userCreateData = await this.userRepository.createUser(
       email,
       nickname,
@@ -78,7 +57,7 @@ module.exports = class UserService {
       answer
     );
 
-    return { status: 201, result: true, data: userCreateData };
+    return { status: 200, result: true, data: userCreateData };
   };
 
   login = async (email, password) => {
