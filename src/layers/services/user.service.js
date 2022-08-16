@@ -51,13 +51,6 @@ module.exports = class UserService {
       };
     }
 
-    if (pwExp.test(password)) {
-      return {
-        status: 400,
-        result: false,
-        message: "패스워드 형식을 확인해 주세요.",
-      };
-    }
     const existEmail = await this.userRepository.findUserByMail(email);
     if (existEmail) {
       return {
