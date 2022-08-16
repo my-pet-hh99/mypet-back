@@ -3,7 +3,9 @@ const { Access } = require("../config/secretKey");
 
 module.exports = (req, res, next) => {
   const token = req.headers.authorization;
-
+   [type, accessToken]  = token.split(' ');
+  if (type !== 'Bearer') throw Error();
+  
   try {
     const tokenValue = jwt.verify(accessToken, Access.Secret);
 
@@ -12,6 +14,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(401).json({ result: false, messege: "fail" });
+    res.status(401).json({ result: false, message: "fail" });
   }
 };
