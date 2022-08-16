@@ -3,14 +3,16 @@ const commentRouter = express.Router();
 
 const CommentController = require("../controllers/comment.controller");
 const commentController = new CommentController();
+const authmiddleware = require("../../middlewares/auth.middleware");
+
 
 commentRouter.route('/:postId')
-    .post(commentController.createComment)
+    .post(authmiddleware, commentController.createComment)
     .get(commentController.getComment);
 
 commentRouter.route('/:commentId')
-    .put(commentController.updateComment)
-    .delete(commentController.deleteComment);
+    .put(authmiddleware, commentController.updateComment)
+    .delete(authmiddleware, commentController.deleteComment);
 
 // http://localhost:8080/api/comment
 
