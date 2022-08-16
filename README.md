@@ -21,7 +21,7 @@ root
   └─seeders
 ```
 
-## 프로젝트 백엔드팀원
+## 프로젝트 팀원
 - @soularofdawn
 - @codeing999
 - @hanbaek-Lee
