@@ -33,8 +33,6 @@ module.exports = class CommentService {
   getComment = async (postId) => {
     try {
 
-      //const isExistPost = await this.postRepository.isExistPost()
-
       const comment = await this.commentRepository.getComment(postId);
       if (comment.result === false) throw new Error('댓글 목록 조회에 실패하였습니다.');
       const commentdata = comment.data.map(data => {
