@@ -31,25 +31,29 @@ class PostRepository {
             return post;
       };
 
-    createPost = async (userId, imageUrl,text) => {
-        const createPostData = await Post.create({
-            userId,
-            imageUrl,
-            text,
-        });
-        return updatePostData;
+   createPost = async (userId, imageUrl, text) => {
+      const createPostData = await Post.create({
+        userId,
+        imageUrl,
+        text,
+      });
+
+      return createPostData
     };
 
-    updatePost = async (postId, imageUrl, text) => {
-        const updatePostData = Post.update({
-            imageUrl: imageUrl,
-            text: text,
-            }, {
-                where: {postId}
-            });
-        return updatePostData;
-    };
-
+  updatePost = async (postId, imageUrl, text) => {
+    const updatePostData = Post.update(
+      {
+        imageUrl: imageUrl,
+        text: text,
+      },
+      {
+        where: { postId },
+      }
+    );
+    return updatePostData;
+  };
+  
   deletePost = async (postId) => {
     const deletePostData = Post.destroy({
       where: { postId },
