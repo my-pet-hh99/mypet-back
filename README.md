@@ -1,6 +1,6 @@
 # mypet-back
 
-## [API 명세](./docs/API.md)
+## [API 명세서](./docs/API.md)
 
 ## Directory Structure
 ```cmd
@@ -21,7 +21,7 @@ root
   └─seeders
 ```
 
-## package
+## ackage
 ```json
   "dependencies": {
     "bcrypt": "^5.0.1",
