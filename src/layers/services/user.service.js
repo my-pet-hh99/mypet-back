@@ -7,6 +7,7 @@ module.exports = class UserService {
 
   signup = async (email, nickname, password, confirm, answer) => {
     if (!email || !nickname || !password || !confirm || !answer) {
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
 
     const pwExp = /^[a-zA-Z0-9]{4,30}$/;
@@ -22,8 +23,6 @@ module.exports = class UserService {
         result: false,
         message: "이메일이 형식에 맞지 않습니다.",
       };
-      //   errorMessage: "이메일 형식이 아닙니다.",
-      // });
     } else if (pwExp.test(password)) {
       return {
         status: 400,
@@ -71,16 +70,24 @@ module.exports = class UserService {
 
   checkEmail = async (email) => {
     if (!email) {
-      return;
+      return { status: 200, result: false, message: "입력값이 비어 있습니다." };
     }
     const existUser = await this.userRepository.findUserByMail(email);
 
-    return { status: 200, result: true, data: existUser };
+    if (existUser) {
+      return {
+        status: 400,
+        result: false,
+        message: "중복된 이메일입니다.",
+      };
+    }
+
+    return { status: 200, result: true };
   };
 
   login = async (email, password) => {
     if (!email || !password) {
-      return { status: 400, result: false, messege: "Input value is empty" };
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
 
     const user = await this.userRepository.findUserLogin(email, password);
@@ -88,11 +95,16 @@ module.exports = class UserService {
       return {
         status: 400,
         result: false,
-        messege: "Invalid nickname or password",
+        message: "존재하지 않는 정보입니다.",
       };
     }
 
-    const session = await this.userRepository.createSession(user.userId);
+    const existSession = await this.userRepository.findSessionByUserId(
+      user.userId
+    );
+    if (existSession) {
+      await this.userRepository.deleteSession(user.userId);
+    }
 
     const refreshToken = jwt.sign(
       {
@@ -101,6 +113,8 @@ module.exports = class UserService {
       Refresh.Secret,
       Refresh.Option
     );
+
+    await this.userRepository.createSession(user.userId, refreshToken);
 
     const accessToken = jwt.sign(
       {
@@ -116,34 +130,63 @@ module.exports = class UserService {
 
   logout = async (refreshToken) => {
     try {
+      if (!refreshToken) {
+        return {
+          status: 400,
+          result: false,
+          message: "입력값이 비어 있습니다.",
+        };
+      }
       const tokenValue = jwt.verify(refreshToken, Refresh.Secret);
-
-      const success = await this.userRepository.deleteSession(
-        tokenValue.sessionId
-      );
-
-      return { status: 201, result: true };
-    } catch (err) {
-      return { status: 401, result: false, message: "" };
-    }
-  };
-
-  reIssue = async (refreshToken, accessToken) => {
-    try {
-      const tokenValue = jwt.verify(refreshToken, Refresh.Secret);
-
       const session = await this.userRepository.findSession(tokenValue.userId);
 
       if (!session) {
-        return { status: 401, result: false, message: "" };
+        return {
+          status: 401,
+          result: false,
+          message: "토큰이 유효하지 않습니다.",
+        };
       }
 
-      const accessInfo = jwt.decode(accessToken);
-      const newAccessToken = jwt.sign(accessInfo, Access.Secret, Access.Option);
+      await this.userRepository.deleteSession(session.sessionId);
 
-      return { status: 201, result: true, data: newAccessToken };
+      return { status: 201, result: true };
     } catch (err) {
-      return { status: 401, result: false, message: "" };
+      return {
+        status: 401,
+        result: false,
+        message: "토큰이 유효하지 않습니다.",
+      };
+    }
+  };
+
+  // edit = async (userId, nickname, password, answer) => {};
+
+  reIssue = async (refreshToken) => {
+    try {
+      const tokenValue = jwt.verify(refreshToken, Refresh.Secret);
+
+      const session = await this.userRepository.findSession(
+        tokenValue.userId,
+        refreshToken
+      );
+      if (!session) {
+        return {
+          status: 401,
+          result: false,
+          message: "토큰이 유효하지 않습니다.",
+        };
+      }
+
+      const accessToken = jwt.sign(accessInfo, Access.Secret, Access.Option);
+
+      return { status: 201, result: true, data: accessToken };
+    } catch (err) {
+      return {
+        status: 401,
+        result: false,
+        message: "토큰이 유효하지 않습니다.",
+      };
     }
   };
 };

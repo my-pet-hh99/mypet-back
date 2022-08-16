@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { Access } = require("../config/secretKey");
 
 module.exports = (req, res, next) => {
-  const token = req.headers.authorization;
+  const { accessToken } = req.headers.authorization;
 
   try {
     const tokenValue = jwt.verify(accessToken, Access.Secret);
@@ -12,6 +12,8 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(401).json({ result: false, messege: "fail" });
+    res
+      .status(401)
+      .json({ result: false, messege: "토큰이 유효하지 않습니다." });
   }
 };

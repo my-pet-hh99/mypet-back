@@ -25,7 +25,10 @@ module.exports = class UserController {
 
     const response = await this.userService.checkEmail(email);
 
-    res.status().json({});
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
   };
 
   login = async (req, res) => {
@@ -41,9 +44,9 @@ module.exports = class UserController {
   };
 
   logout = async (req, res) => {
-    const { sessionId } = res.locals;
+    const { refreshToken } = req.header.authorization;
 
-    const response = await this.userService.logout();
+    const response = await this.userService.logout(refreshToken);
 
     res.status(response.status).json({
       result: response.result,
@@ -53,9 +56,9 @@ module.exports = class UserController {
   };
 
   reIssue = async (req, res) => {
-    const { refreshToken, accessToken } = req.header.authorization;
+    const { refreshToken } = req.header.authorization;
 
-    const response = await this.userService.reIssue(refreshToken, accessToken);
+    const response = await this.userService.reIssue(refreshToken);
 
     res.status(response.status).json({
       result: response.result,
@@ -68,8 +71,13 @@ module.exports = class UserController {
   //   const { userId } = res.locals;
   //   const { nickname, password, answer } = req.body;
 
-  //   const response = await this.userService;
+  //   const response = await this.userService.edit(
+  //     userId,
+  //     nickname,
+  //     password,
+  //     answer
+  //   );
 
-  //   res.status()
+  //   res.status();
   // };
 };
