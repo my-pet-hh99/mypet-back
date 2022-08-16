@@ -1,6 +1,5 @@
 const { User, Session } = require("../../models");
 
-
 module.exports = class UserRepository {
   createUser = async (email, nickname, password, answer) => {
     const createUsersData = await User.create({
@@ -60,7 +59,7 @@ module.exports = class UserRepository {
   };
 
   deleteUser = async (userId) => {
-    const success = await User.destroy({ where: userId });
+    const success = await User.destroy({ where: { userId } });
 
     return success;
   };
@@ -72,19 +71,19 @@ module.exports = class UserRepository {
   };
 
   findSession = async (userId, token) => {
-    const session = await Session.findOne({ where: userId, token });
+    const session = await Session.findOne({ where: { userId, token } });
 
     return session;
   };
 
   findSessionByUserId = async (userId) => {
-    const session = await Session.findOne({ where: userId });
+    const session = await Session.findOne({ where: { userId } });
 
     return session;
   };
 
-  deleteSession = async (userId) => {
-    const success = await Session.destroy({ where: userId });
+  deleteSession = async (sessionId) => {
+    const success = await Session.destroy({ where: { sessionId } });
 
     return success;
   };

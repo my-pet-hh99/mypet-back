@@ -2,7 +2,7 @@ const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Bcrypt = require('../../modules/bcrypt');
+const Bcrypt = require("../../modules/bcrypt");
 
 module.exports = class UserService {
   userRepository = new UserRepository();
@@ -60,7 +60,7 @@ module.exports = class UserService {
       };
     }
 
-    if ( nickname.length > 10 || nickname.length < 1 ) {
+    if (nickname.length > 10 || nickname.length < 1) {
       return {
         status: 400,
         result: false,
@@ -68,12 +68,12 @@ module.exports = class UserService {
       };
     }
 
-    const hashedpassword = await this.bcrypt.bcryptPassword(password);
+    const hashedPassword = await this.bcrypt.bcryptPassword(password);
 
     const userCreateData = await this.userRepository.createUser(
       email,
       nickname,
-      hashedpassword,
+      hashedPassword,
       answer
     );
 
@@ -119,21 +119,30 @@ module.exports = class UserService {
     }
 
     const user = await this.userRepository.findUserByMail(email);
-    const hashedpassword = user?.dataValues.password;
-    const comparePassword = await bcrypt.compare(password, hashedpassword);
+    if (!user) {
+      return {
+        status: 400,
+        result: false,
+        message: "존재하지 않는 정보입니다.",
+      };
+    }
+
+    const hashedPassword = user.password;
+    const comparePassword = await bcrypt.compare(password, hashedPassword);
     if (!comparePassword) {
       return {
         status: 400,
         result: false,
-        message: "비밀번호가 틀렸습니다.",
+        message: "존재하지 않는 정보입니다.",
       };
-    };
+    }
 
     const existSession = await this.userRepository.findSessionByUserId(
       user.userId
     );
+
     if (existSession) {
-      await this.userRepository.deleteSession(user.userId);
+      await this.userRepository.deleteSession(existSession.sessionId);
     }
 
     const refreshToken = jwt.sign(
@@ -143,7 +152,7 @@ module.exports = class UserService {
       Refresh.Secret,
       Refresh.Option
     );
-    
+
     await this.userRepository.createSession(user.userId, refreshToken);
 
     const accessToken = jwt.sign(
@@ -154,7 +163,7 @@ module.exports = class UserService {
       Access.Secret,
       Access.Option
     );
-    
+
     return { status: 201, result: true, data: { refreshToken, accessToken } };
   };
 
@@ -168,7 +177,7 @@ module.exports = class UserService {
       };
     }
 
-    await this.userRepository.deleteSession(session.userId);
+    await this.userRepository.deleteSession(session.sessionId);
 
     return { status: 200, result: true };
   };

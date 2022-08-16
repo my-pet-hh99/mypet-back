@@ -1,12 +1,11 @@
 const { Comment, User, Post } = require("../../models");
 
 module.exports = class CommentRepository {
-  isExistComment = async (commentId) => {
+  getCommentById = async (commentId) => {
     try {
       const result = await Comment.findByPk(commentId);
       if (result === null) return null;
-      else return true;
-      //return result.dataValues;
+      else return result.dataValues;
     } catch (err) {
       console.log(err);
       return { result: false, message: err.message };
