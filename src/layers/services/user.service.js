@@ -1,6 +1,7 @@
 const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
+const { bcryptPassword } = require('../../modules/bcrypt');
 
 module.exports = class UserService {
   userRepository = new UserRepository();
@@ -57,6 +58,7 @@ module.exports = class UserService {
         message: "중복된 이메일입니다.",
       };
     }
+    const hashedpassword = await bcryptPassword(password);
 
     const userCreateData = await this.userRepository.createUser(
       email,
