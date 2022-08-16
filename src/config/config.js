@@ -5,7 +5,7 @@ const development = {
   username: env.DB_USERNAME,
   password: env.DB_PASSWORD,
   database: env.DB_DATABASE,
-  host: env.DB_HOST,
+  host: "express-database.ckacb6rukdh1.ap-northeast-2.rds.amazonaws.com",
   dialect: env.DB_DIALECT 
 };
 

@@ -15,7 +15,8 @@ module.exports = class CommentService {
       const user = await this.userRepository.findUserById(userId);
       if (user === null) throw new Error('존재하지 않는 사용자입니다.');
 
-      //const isExistPost = await this.postRepository.isExistPost()
+      const isExistPost = await this.postRepository.findPostById(postId);
+      console.log(isExistPost);
 
       const isCreated = await this.commentRepository.createComment(userId, postId, text);
       if (isCreated.result === false) throw new Error('댓글 작성에 실패하였습니다.');

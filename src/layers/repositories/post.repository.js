@@ -16,29 +16,40 @@ class PostRepository {
 
     return posts;
   };
+
+  findPostById = async (postId) => {
+    const post = await Post.findByPk(postId, {
+      include: [
+        {
+          model: User,
+          attributes: ["email", "nickname", "userId"],
+        },
+      ],
+    });
+
+    return post;
+  };
+
   createPost = async (userId, imageUrl, text) => {
     const createPostData = await Post.create({
       userId,
       imageUrl,
       text,
     });
-
-    return createPostData;
   };
 
-  updatePost = async (postId, text) => {
+  updatePost = async (postId, imageUrl, text) => {
     const updatePostData = Post.update(
       {
+        imageUrl: imageUrl,
         text: text,
       },
       {
         where: { postId },
       }
     );
-
     return updatePostData;
   };
-
   deletePost = async (postId) => {
     const deletePostData = Post.destroy({
       where: { postId },
