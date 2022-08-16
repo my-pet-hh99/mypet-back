@@ -41,7 +41,6 @@ module.exports = class UserService {
         message: "패스워드 형식을 확인해 주세요.",
       };
     }
-    ///여기까지 확인
     const existEmail = await this.userRepository.findUserbyEmail(email);
     if (existEmail) {
       return {
