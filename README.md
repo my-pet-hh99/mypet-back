@@ -5,7 +5,7 @@
 ## Directory Structure
 ```cmd
 root
-├─doc
+├─docs
 ├─node_modules
 ├─src
 └─┐config
