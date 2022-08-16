@@ -5,7 +5,7 @@ module.exports = class UserController {
   signup = async (req, res) => {
     const { email, nickname, password, confirm, answer } = req.body;
 
-    const response = await this.userService.signup(
+    const response = await this.userService.createUsers(
       email,
       nickname,
       password,
@@ -21,11 +21,21 @@ module.exports = class UserController {
   };
 
   checkEmail = async (req, res) => {
-    const { email } = req.params;
+    const { email } = req.query;
 
     const response = await this.userService.checkEmail(email);
 
-    res.status().json({});
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
+  };
+
+  checkPassword = async (req, res) => {
+    const { password } = req.query;
+    const { userId } = res.locals;
+
+    const response = await this.userService.checkPassword(userId, password);
   };
 
   login = async (req, res) => {
@@ -41,9 +51,9 @@ module.exports = class UserController {
   };
 
   logout = async (req, res) => {
-    const { sessionId } = res.locals;
+    const { token, userId } = res.locals;
 
-    const response = await this.userService.logout();
+    const response = await this.userService.logout(token, userId);
 
     res.status(response.status).json({
       result: response.result,
@@ -53,9 +63,9 @@ module.exports = class UserController {
   };
 
   reIssue = async (req, res) => {
-    const { refreshToken, accessToken } = req.header.authorization;
+    const { token, userId } = res.locals;
 
-    const response = await this.userService.reIssue(refreshToken, accessToken);
+    const response = await this.userService.reIssue(token, userId);
 
     res.status(response.status).json({
       result: response.result,
@@ -64,12 +74,36 @@ module.exports = class UserController {
     });
   };
 
-  // editUserInfo = async (req, res) => {
-  //   const { userId } = res.locals;
-  //   const { nickname, password, answer } = req.body;
+  me = async (req, res) => {
+    const { userId } = res.locals;
 
-  //   const response = await this.userService;
+    const response = await this.userService.userInfo(userId);
 
-  //   res.status()
-  // };
+    res.status(response.status).json({
+      result: response.result,
+      data: response.data,
+      message: response.message,
+    });
+  };
+
+  edit = async (req, res) => {
+    const { userId } = res.locals;
+    const { nickname, password, answer } = req.body;
+
+    const response = await this.userService.edit(
+      userId,
+      nickname,
+      password,
+      answer
+    );
+
+    res.status();
+  };
+
+  quit = async (req, res) => {
+    const { userId } = res.locals;
+    const { password } = req.body;
+
+    const response = await this.userService.quit(userId, password);
+  };
 };
