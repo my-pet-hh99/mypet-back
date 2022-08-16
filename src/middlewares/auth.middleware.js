@@ -3,7 +3,7 @@ const { Access } = require("../config/secretKey");
 
 module.exports = (req, res, next) => {
   const token = req.headers.authorization;
-   [type, accessToken]  = token.split(' ');
+  const [type, accessToken]  = token.split(' ');
 
   try {
     if ( !accessToken ||type !== 'Bearer') throw Error();
