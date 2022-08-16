@@ -1,11 +1,12 @@
 const { User, Session } = require("../../models");
 
 module.exports = class UserRepository {
-  createUser = async (email, nickname, password) => {
+  createUser = async (email, nickname, password, answer) => {
     const createUsersData = await User.create({
       email,
       nickname,
       password,
+      answer,
     });
 
     return createUsersData;
@@ -47,14 +48,20 @@ module.exports = class UserRepository {
     return success;
   };
 
-  createSession = async (userId) => {
-    const session = await Session.create({ userId });
+  createSession = async (userId, token) => {
+    const session = await Session.create({ userId, token });
 
     return session;
   };
 
-  findSession = async (sessionId) => {
-    const session = await Session.findByPk(sessionId);
+  findSession = async (userId, token) => {
+    const session = await Session.findOne({ where: userId, token });
+
+    return session;
+  };
+
+  findSessionByUserId = async (userId) => {
+    const session = await Session.findOne({ where: userId });
 
     return session;
   };
