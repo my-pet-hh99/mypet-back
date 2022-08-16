@@ -5,11 +5,11 @@ const router = express.Router();
 const PostController = require("../controllers/post.controller");
 const postController = new PostController();
 
-router.get('/', postController.getPosts)
-router.post('/', postController.createPost)
-router.put('/:postId', postController.updatePost)
-router.delete('/:postId', postController.deletePost)
-
+router.get('/', postController.getPosts);
+router.get('/:postId', postController.getPostById);
+router.post('/', postController.createPost);
+router.put('/:postId', postController.updatePost);
+router.delete('/:postId', postController.deletePost);
 
 // http://localhost:8080/api/post
 

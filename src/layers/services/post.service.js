@@ -1,3 +1,4 @@
+const e = require("express");
 const { text } = require("express");
 const PostRepository = require("../repositories/post.repository");
 
@@ -18,6 +19,28 @@ class PostService {
       }
     })
   }
+
+  findPostById = async (postId) => {
+
+    try {
+      const post = await this.postRepository.findPostById(postId);
+      
+      return {
+        postId: post.postId,
+        imageUrl: post.imageUrl,
+        text: post.text,
+        author: post.User.nickname,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    } catch(err) {
+      console.error(err)
+
+      return;
+    }
+
+  }
+
   createPost = async (userId, imageUrl, text) => {
     const createPostData = await this.postRepository.createPost(userId, imageUrl, text);
 
@@ -26,19 +49,29 @@ class PostService {
     };
   }
 
-  updatePost = async (postId, text) => {
-    const updatePostData = await this.postRepository.updatePost(postId, text)
+  updatePost = async (postId, imageUrl, text) => {
 
-    return {
-      result: true
+    try {
+      const updatePostData = await this.postRepository.updatePost(postId, imageUrl, text)
+
+    
+      return updatePostData;
+    } catch (err) {
+      console.error(err);
+
+      return;
     }
   }
 
   deletePost = async (postId) => {
-    const deletePostData = await this.postRepository.deletePost(postId)
+    try {
+      const deletePostData = await this.postRepository.deletePost(postId)
+  
+      return deletePostData;
+    } catch (err) {
+      console.error(err);
 
-    return {
-      result: true
+      return;
     }
   }
 

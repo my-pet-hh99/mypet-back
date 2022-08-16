@@ -2,6 +2,7 @@ const { Post } = require("../../models");
 const { User } = require("../../models");
 
 class PostRepository {
+
     findAllPost = async (offset) => {
         const posts = await Post.findAll({
             include: [
@@ -14,9 +15,22 @@ class PostRepository {
              offset:offset,
         });
 
-
         return posts;
     }
+
+    findPostById = async (postId) => {
+            const post = await Post.findByPk(postId,{
+                include: [
+                    {
+                      model: User,
+                      attributes: ['email', 'nickname'],
+                    }
+                 ],
+            });
+
+            return post;
+      };
+
     createPost = async (userId, imageUrl,text) => {
         const createPostData = await Post.create({
             userId,
@@ -27,8 +41,9 @@ class PostRepository {
         return createPostData;
     }
 
-    updatePost = async (postId, text) => {
+    updatePost = async (postId, imageUrl, text) => {
         const updatePostData = Post.update({
+            imageUrl: imageUrl,
             text: text,
             }, {
                 where: {postId}
