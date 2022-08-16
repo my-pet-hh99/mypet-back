@@ -15,5 +15,5 @@
 | 게시글 삭제       | DELETE /api/post/:postId        | -         | O           |  |
 | 댓글 조회         | GET /api/comment/:postId        | -         | -           | @codeing999 |
 | 댓글 작성         | POST /api/comment/:postId       | O         | O           | @codeing999 |
-| 댓글 수정         | PUT /api/comment/commentId      | O         | O           | @codeing999 |
+| 댓글 수정         | PUT /api/comment/:commentId      | O         | O           | @codeing999 |
 | 댓글 삭제         | DELETE /api/comment/:commentId  | -         | O           | @codeing999 |
