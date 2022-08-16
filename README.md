@@ -1,6 +1,6 @@
 # mypet-back
 
-## [API 명세](./doc/API명세서.md)
+## [API 명세](./docs/API.md)
 
 ## Directory Structure
 ```cmd
