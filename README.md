@@ -6,7 +6,7 @@ jsonwebtoken
 nodemon
 sequelize
 
-## (API 명세)[./doc/API 명세서.md]
+## [API 명세](./doc/API 명세서.md)
 
 ## Directory Structure
 ├─doc
