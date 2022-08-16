@@ -6,14 +6,15 @@ const e = require("express");
 module.exports = class UserService {
   userRepository = new UserRepository();
 
-  signup = async (email, nickname, password, confirm, answer) => {
+  createUsers = async (email, nickname, password, confirm, answer) => {
     if (!email || !nickname || !password || !confirm || !answer) {
-      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
+      return { status: 400, result: false, message: "입력칸이 비어 있습니다." };
     }
 
-    const pwExp = /^[a-zA-Z0-9]{4,30}$/;
+    const pwExp =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
     const emailExp =
-      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+      /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
 
     // const reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
     // const regE = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
@@ -38,8 +39,30 @@ module.exports = class UserService {
         result: false,
         message: "암호가 암호 확인란과 일치하지 않습니다.",
       };
-      //   errorMessage: "패스워드가 일치하지 않습니다.",
-      // });
+    }
+
+    if (nickname.length > 10 || nickname.length < 1) {
+      return {
+        status: 400,
+        result: false,
+        message: "닉네임의 형식을 확인해 주세요.",
+      };
+    }
+
+    if (pwExp.test(password)) {
+      return {
+        status: 400,
+        result: false,
+        message: "패스워드 형식을 확인해 주세요.",
+      };
+    }
+    const existEmail = await this.userRepository.findUserbyEmail(email);
+    if (existEmail) {
+      return {
+        status: 400,
+        result: false,
+        message: "이미 존재하는 이메일 입니다.",
+      };
     }
 
     if (nickname.length < 10 || nickname.length > 1) {
@@ -66,7 +89,7 @@ module.exports = class UserService {
       answer
     );
 
-    return { status: 201, result: true, data: userCreateData };
+    return { status: 200, result: true, data: userCreateData };
   };
 
   checkEmail = async (email) => {
