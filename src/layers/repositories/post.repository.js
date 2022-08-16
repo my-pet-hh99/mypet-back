@@ -53,7 +53,7 @@ class PostRepository {
     );
     return updatePostData;
   };
-  
+
   deletePost = async (postId) => {
     const deletePostData = Post.destroy({
       where: { postId },
