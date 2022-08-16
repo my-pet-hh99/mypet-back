@@ -1,10 +1,10 @@
 const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
+const e = require("express");
 
 module.exports = class UserService {
   userRepository = new UserRepository();
-
 
   createUsers = async (email, nickname, password, confirm, answer) => {
     if (!email || !nickname || !password || !confirm || !answer) {
@@ -16,9 +16,22 @@ module.exports = class UserService {
     const emailExp =
       /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
 
+    // const reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
+    // const regE = /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
+
     if (!emailExp.test(email)) {
-      return { status: 400, result: false, message: "이메일 형식이 아닙니다" };
+      return {
+        status: 400,
+        result: false,
+        message: "이메일이 형식에 맞지 않습니다.",
       };
+    } else if (!pwExp.test(password)) {
+      return {
+        status: 400,
+        result: false,
+        message: "암호가 형식에 맞지 않습니다.",
+      };
+    }
 
     if (password !== confirm) {
       return {
@@ -51,7 +64,6 @@ module.exports = class UserService {
         message: "이미 존재하는 이메일 입니다.",
       };
     }
-    
 
     if (nickname.length < 10 || nickname.length > 1) {
       return {
@@ -82,7 +94,7 @@ module.exports = class UserService {
 
   checkEmail = async (email) => {
     if (!email) {
-      return { status: 200, result: false, message: "입력값이 비어 있습니다." };
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
     const existUser = await this.userRepository.findUserByMail(email);
 
@@ -91,6 +103,22 @@ module.exports = class UserService {
         status: 400,
         result: false,
         message: "중복된 이메일입니다.",
+      };
+    }
+
+    return { status: 200, result: true };
+  };
+
+  checkPassword = async (userId, password) => {
+    if (!password) {
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
+    }
+    const user = await this.userRepository.findUserById(userId);
+    if (user.password !== password) {
+      return {
+        status: 400,
+        result: false,
+        message: "암호가 올바르지 않습니다.",
       };
     }
 
@@ -140,65 +168,156 @@ module.exports = class UserService {
     return { status: 201, result: true, data: { refreshToken, accessToken } };
   };
 
-  logout = async (refreshToken) => {
-    try {
-      if (!refreshToken) {
-        return {
-          status: 400,
-          result: false,
-          message: "입력값이 비어 있습니다.",
-        };
-      }
-      const tokenValue = jwt.verify(refreshToken, Refresh.Secret);
-      const session = await this.userRepository.findSession(tokenValue.userId);
-
-      if (!session) {
-        return {
-          status: 401,
-          result: false,
-          message: "토큰이 유효하지 않습니다.",
-        };
-      }
-
-      await this.userRepository.deleteSession(session.sessionId);
-
-      return { status: 201, result: true };
-    } catch (err) {
+  logout = async (token, userId) => {
+    const session = await this.userRepository.findSession(userId, token);
+    if (!session) {
       return {
         status: 401,
         result: false,
-        message: "토큰이 유효하지 않습니다.",
+        message: "로그아웃 된 토큰입니다.",
       };
     }
+
+    await this.userRepository.deleteSession(session.userId);
+
+    return { status: 200, result: true };
   };
 
-  // edit = async (userId, nickname, password, answer) => {};
+  edit = async (userId, nickname, password, answer) => {
+    const user = await this.userRepository.findUserById(userId);
 
-  reIssue = async (refreshToken) => {
-    try {
-      const tokenValue = jwt.verify(refreshToken, Refresh.Secret);
-
-      const session = await this.userRepository.findSession(
-        tokenValue.userId,
-        refreshToken
-      );
-      if (!session) {
-        return {
-          status: 401,
-          result: false,
-          message: "토큰이 유효하지 않습니다.",
-        };
-      }
-
-      const accessToken = jwt.sign(accessInfo, Access.Secret, Access.Option);
-
-      return { status: 201, result: true, data: accessToken };
-    } catch (err) {
+    if (!user) {
+      console.log("회원탈퇴 후 접근 : ", userId);
       return {
         status: 401,
         result: false,
-        message: "토큰이 유효하지 않습니다.",
+        message: "존재하지 않는 정보입니다.",
       };
     }
+
+    if (!nickname || !answer) {
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
+    } else if (nickname.length > 10) {
+      return {
+        status: 400,
+        result: false,
+        message: "닉네임이 형식에 맞지 않습니다.",
+      };
+    }
+
+    const pwExp = /^[a-zA-Z0-9]{4,30}$/;
+    if (!password) {
+      password = user.password;
+    } else if (!pwExp.test(password)) {
+      return {
+        status: 400,
+        result: false,
+        message: "암호가 형식에 맞지 않습니다.",
+      };
+    }
+
+    await this.userRepository.editUser(nickname, password, answer);
+
+    return { status: 201, result: true };
+  };
+
+  lostPW = async (email, answer) => {
+    if (!eamil || !answer) {
+      return { status: 400, result: false, message: "입력값이 비어 있습니다." };
+    }
+
+    const user = await this.userRepository.findPW(email, answer);
+    if (!user) {
+      return {
+        status: 400,
+        result: false,
+        message: "존재하지 않는 정보입니다.",
+      };
+    }
+
+    const newPassword = "123456789";
+    const success = await this.userRepository.changePW(
+      email,
+      answer,
+      newPassword
+    );
+
+    return { status: 201, result: true, data: newPassword };
+  };
+
+  quit = async (userId, password) => {
+    if (!password) {
+      return {
+        status: 400,
+        result: false,
+        message: "암호가 입력되지 않았습니다.",
+      };
+    }
+
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) {
+      console.log("회원탈퇴 후 접근 : ", userId);
+      return {
+        status: 401,
+        result: false,
+        message: "존재하지 않는 정보입니다.",
+      };
+    }
+    if (user.password !== password) {
+      return {
+        status: 401,
+        result: false,
+        message: "암호가 올바르지 않습니다.",
+      };
+    }
+
+    await this.userRepository.deleteUser(userId);
+
+    return { status: 200, result: true };
+  };
+
+  userInfo = async (userId) => {
+    const user = await this.userRepository.findUserById(userId);
+
+    if (!user) {
+      console.log("회원탈퇴 후 접근 : ", userId);
+      return {
+        status: 401,
+        result: false,
+        message: "존재하지 않는 정보입니다.",
+      };
+    }
+
+    const data = {
+      userId,
+      email: user.email,
+      nickname: user.nickname,
+      answer: user.answer,
+    };
+
+    return { status: 200, result: true, data };
+  };
+
+  reIssue = async (token, userId) => {
+    const session = await this.userRepository.findSession(userId, token);
+    if (!session) {
+      return {
+        status: 401,
+        result: false,
+        message: "로그아웃 된 토큰입니다.",
+      };
+    }
+
+    const user = await this.userRepository.findUserById(session.userId);
+    const accessToken = jwt.sign(
+      {
+        userId: user.userId,
+        nickname: user.nickname,
+      },
+      Access.Secret,
+      Access.Option
+    );
+
+    return { status: 200, result: true, data: accessToken };
   };
 };
