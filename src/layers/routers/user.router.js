@@ -21,7 +21,7 @@ router.delete("/logout", needRefresh, userController.logout);
 // 개인페이지
 router.get("/me", auth, userController.me);
 router.put("/edit", auth, userController.edit);
-router.get("/quit", userController.quit);
-router.get("/pwCheck", userController.checkPassword);
+router.get("/quit", auth, userController.quit);
+router.get("/pwCheck", auth, userController.checkPassword);
 
 module.exports = router;
