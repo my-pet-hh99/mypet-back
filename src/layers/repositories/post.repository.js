@@ -23,7 +23,7 @@ class PostRepository {
                 include: [
                     {
                       model: User,
-                      attributes: ['email', 'nickname'],
+                      attributes: ['email', 'nickname', 'userId'],
                     }
                  ],
             });

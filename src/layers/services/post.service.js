@@ -21,7 +21,6 @@ class PostService {
   }
 
   findPostById = async (postId) => {
-
     try {
       const post = await this.postRepository.findPostById(postId);
       
@@ -30,6 +29,7 @@ class PostService {
         imageUrl: post.imageUrl,
         text: post.text,
         author: post.User.nickname,
+        userId: post.User.userId,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       };
@@ -38,7 +38,6 @@ class PostService {
 
       return;
     }
-
   }
 
   createPost = async (userId, imageUrl, text) => {
@@ -50,7 +49,6 @@ class PostService {
   }
 
   updatePost = async (postId, imageUrl, text) => {
-
     try {
       const updatePostData = await this.postRepository.updatePost(postId, imageUrl, text)
 
@@ -63,7 +61,7 @@ class PostService {
     }
   }
 
-  deletePost = async (postId) => {
+  deletePost = async (userId, postId) => {
     try {
       const deletePostData = await this.postRepository.deletePost(postId)
   
@@ -73,9 +71,7 @@ class PostService {
 
       return;
     }
-  }
-
-  
+  }  
 }
 
 module.exports =  PostService;
