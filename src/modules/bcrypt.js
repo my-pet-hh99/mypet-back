@@ -9,7 +9,7 @@ class Bcrypt {
     }
 
     bcryptPassword = async function (password) {
-        hashedpassword = await bcrypt.hash(password, +saltRounds);
+        const hashedpassword = await bcrypt.hash(password, +this.saltRounds);
         return hashedpassword;
     };
 }
