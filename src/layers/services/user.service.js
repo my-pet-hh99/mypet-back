@@ -30,25 +30,44 @@ module.exports = class UserService {
     }
 
     if (nickname.search(re_nickname) === -1) {
-      return res.status(412).send({
-        errorMessage: "nickname의 형식이 일치하지 않습니다.",
-      });
+      return {
+        status: 400,
+        result: false,
+        message: "nickname의 형식이 일치하지 않습니다.",
+      };
+
+      // res.status(412).send({
+      //   errorMessage: "nickname의 형식이 일치하지 않습니다.",
+      // });
     }
 
     if (password.search(re_password) === -1) {
-      return res.status(412).send({
-        errorMessage: "패스워드 형식이 일치하지 않습니다.",
-      });
+      return {
+        status: 400,
+        result: false,
+        message: "패스워드 형식이 일치하지 않습니다.",
+      };
     }
+
+    //   res.status(412).send({
+    //     errorMessage: "패스워드 형식이 일치하지 않습니다.",
+    //   });
+
     const user = await Users.findAll({
       attributes: ["userId"],
       where: { nickname },
     });
 
     if (user.length) {
-      return res.status(412).send({
-        errorMessage: "중복된 닉네임입니다.",
-      });
+      return {
+        status: 400,
+        result: false,
+        message: "중복된 닉네임입니다.",
+      };
+
+      // res.status(412).send({
+      //   errorMessage: "중복된 닉네임입니다.",
+      // });
     }
     // console.log(Users)
 
