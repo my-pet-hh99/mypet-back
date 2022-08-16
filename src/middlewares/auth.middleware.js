@@ -12,6 +12,8 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    res.status(401).json({ result: false, messege: "fail" });
+    res
+      .status(401)
+      .json({ result: false, messege: "토큰이 유효하지 않습니다." });
   }
 };
