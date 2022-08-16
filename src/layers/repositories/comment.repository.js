@@ -1,4 +1,4 @@
-const { Comment } = require("../../models");
+const { Comment, User, Post } = require("../../models");
 
 module.exports = class CommentRepository {
 
@@ -11,9 +11,10 @@ module.exports = class CommentRepository {
 
         } catch (err) {
             console.log(err);
-            return { success : false, message : err.message};
+            return { result : false, message : err.message};
         }
     };
+
 
     createComment = async (userId, postId, text) => {
         try {
@@ -24,26 +25,33 @@ module.exports = class CommentRepository {
                 text : text
     
             });
-            return { success : true, result : result.dataValues };
+            return { result : true, data : result.dataValues };
 
         } catch (err){
             console.log(err);
-            return { success : false, message : err.message};
+            return { result : false, message : err.message};
         }
 
     };
 
     getComment = async (postId) => {
         try {
-            const result = await Comment.findAll( {
-                where : { postId : postId}
+            const comment = await Comment.findAll( {
+                where : { postId : postId},
+                include : [{
+                    model:User,
+                    attributes:['nickname'],
+
+                }],
+                raw:true
             });
-            return { success : true, result : result };
+
+            return { result : true, data : comment };
 
         } catch (err){
 
             console.log(err);
-            return { success : false};
+            return { result : false};
         }
     };
 
@@ -51,7 +59,7 @@ module.exports = class CommentRepository {
 
         try {
 
-            const result = await Comment.update({
+            const comment = await Comment.update({
                 text : text
 
             }, {
@@ -59,13 +67,13 @@ module.exports = class CommentRepository {
                     commentId : commentId
                 }
             });
-            if (result[0] !== 1) throw new Error('댓글 수정에 실패하였습니다');
-            return { success : true};
+            if (comment[0] !== 1) throw new Error('댓글 수정에 실패하였습니다');
+            return { result : true};
 
         } catch (err){
 
             console.log(err);
-            return { success : false};
+            return { result : false};
         }
     }
 
@@ -78,12 +86,12 @@ module.exports = class CommentRepository {
               });
               
             if (result !== 1) throw new Error('댓글 삭제에 실패하였습니다');
-            return { success : true, result : result };
+            return { result : true };
 
         } catch (err){
 
             console.log(err);
-            return { success : false};
+            return { result : false};
         }
     }
 
