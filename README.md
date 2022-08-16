@@ -21,7 +21,13 @@ root
   └─seeders
 ```
 
-## ackage
+## 프로젝트 백엔드팀원
+- @soularofdawn
+- @codeing999
+- @hanbaek-Lee
+- @oddythecreative
+
+## Package
 ```json
   "dependencies": {
     "bcrypt": "^5.0.1",
