@@ -2,43 +2,44 @@ const { Post } = require("../../models");
 const { User } = require("../../models");
 
 class PostRepository {
-  findAllPost = async (offset) => {
-    const posts = await Post.findAll({
-      include: [
-        {
-          model: User,
-          attributes: ["email", "nickname"],
-        },
-      ],
-      limit: 3,
-      offset: offset,
-    });
 
-    return posts;
-  };
+    findAllPost = async (offset) => {
+        const posts = await Post.findAll({
+            include: [
+                {
+                  model: User,
+                  attributes: ['email', 'nickname'],
+                }
+             ],
+             limit:3,
+             offset:offset,
+        });
 
-  findPostById = async (postId) => {
-    const post = await Post.findByPk(postId, {
-      include: [
-        {
-          model: User,
-          attributes: ["email", "nickname", "userId"],
-        },
-      ],
-    });
+        return posts;
+    }
 
-    return post;
-  };
+    findPostById = async (postId) => {
+            const post = await Post.findByPk(postId,{
+                include: [
+                    {
+                      model: User,
+                      attributes: ['email', 'nickname', 'userId'],
+                    }
+                 ],
+            });
 
-  createPost = async (userId, imageUrl, text) => {
-    const createPostData = await Post.create({
-      userId,
-      imageUrl,
-      text,
-    });
+            return post;
+      };
 
-    return createPostData
-  };
+   createPost = async (userId, imageUrl, text) => {
+      const createPostData = await Post.create({
+        userId,
+        imageUrl,
+        text,
+      });
+
+      return createPostData
+    };
 
   updatePost = async (postId, imageUrl, text) => {
     const updatePostData = Post.update(
