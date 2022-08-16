@@ -35,7 +35,7 @@ class PostController {
     const updatePostData = await this.postService.updatePost(postId, imageUrl, text);
 
 
-    updatePostData[0] ? res.json({ message: `${postId} 번째 게시물 삭제` }) : res.status(400).json({ message: "존재하지 않는 게시물" });
+    updatePostData[0] ? res.json({ message: `${postId} 번째 게시물 업데이트` }) : res.status(400).json({ message: "존재하지 않는 게시물" });
   }
 
   deletePost = async (req, res, next) => {
