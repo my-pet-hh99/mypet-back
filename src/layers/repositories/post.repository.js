@@ -36,6 +36,8 @@ class PostRepository {
       imageUrl,
       text,
     });
+
+    return createPostData
   };
 
   updatePost = async (postId, imageUrl, text) => {
@@ -50,6 +52,7 @@ class PostRepository {
     );
     return updatePostData;
   };
+  
   deletePost = async (postId) => {
     const deletePostData = Post.destroy({
       where: { postId },

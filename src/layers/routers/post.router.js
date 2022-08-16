@@ -7,9 +7,9 @@ const postController = new PostController();
 
 router.get('/', postController.getPosts);
 router.get('/:postId', postController.getPostById);
-router.post('/', authmiddleware,postController.createPost);
-router.put('/:postId', postController.updatePost);
-router.delete('/:postId',authmiddleware,postController.deletePost);
+router.post('/', authmiddleware, postController.createPost);
+router.put('/:postId', authmiddleware, postController.updatePost);
+router.delete('/:postId',authmiddleware, postController.deletePost);
 
 // http://localhost:8080/api/post
 
