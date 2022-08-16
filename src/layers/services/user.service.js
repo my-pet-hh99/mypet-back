@@ -2,7 +2,7 @@ const UserRepository = require("../repositories/user.repository");
 const { Access, Refresh } = require("../../config/secretKey");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Bcrypt = require('../../modules/bcrypt');
+const Bcrypt = require("../../modules/bcrypt");
 
 module.exports = class UserService {
   userRepository = new UserRepository();
@@ -51,13 +51,6 @@ module.exports = class UserService {
       };
     }
 
-    if (pwExp.test(password)) {
-      return {
-        status: 400,
-        result: false,
-        message: "패스워드 형식을 확인해 주세요.",
-      };
-    }
     const existEmail = await this.userRepository.findUserByMail(email);
     if (existEmail) {
       return {
@@ -67,7 +60,7 @@ module.exports = class UserService {
       };
     }
 
-    if ( nickname.length > 10 || nickname.length < 1 ) {
+    if (nickname.length > 10 || nickname.length < 1) {
       return {
         status: 400,
         result: false,
@@ -134,7 +127,7 @@ module.exports = class UserService {
         result: false,
         message: "비밀번호가 틀렸습니다.",
       };
-    };
+    }
 
     const existSession = await this.userRepository.findSessionByUserId(
       user.userId
@@ -150,7 +143,7 @@ module.exports = class UserService {
       Refresh.Secret,
       Refresh.Option
     );
-    
+
     await this.userRepository.createSession(user.userId, refreshToken);
 
     const accessToken = jwt.sign(
@@ -161,7 +154,7 @@ module.exports = class UserService {
       Access.Secret,
       Access.Option
     );
-    
+
     return { status: 201, result: true, data: { refreshToken, accessToken } };
   };
 
