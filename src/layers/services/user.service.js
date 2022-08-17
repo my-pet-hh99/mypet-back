@@ -199,8 +199,9 @@ module.exports = class UserService {
     }
 
     const pwExp = /^[a-zA-Z0-9]{4,30}$/;
+    let hashedPassword;
     if (!password) {
-      password = user.password;
+      hashedPassword = user.password;
     } else if (!pwExp.test(password)) {
       return {
         status: 400,
@@ -208,7 +209,7 @@ module.exports = class UserService {
         message: "암호가 형식에 맞지 않습니다.",
       };
     } else {
-      const hashedPassword = await this.bcrypt.bcryptPassword(password);
+      hashedPassword = await this.bcrypt.bcryptPassword(password);
     }
 
     await this.userRepository.editUser(
