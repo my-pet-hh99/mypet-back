@@ -60,14 +60,6 @@ module.exports = class UserService {
       };
     }
 
-    if (nickname.length > 10 || nickname.length < 1) {
-      return {
-        status: 400,
-        result: false,
-        message: "닉네임 길이가 형식에 맞지 않습니다.",
-      };
-    }
-
     const hashedPassword = await this.bcrypt.bcryptPassword(password);
 
     const userCreateData = await this.userRepository.createUser(
@@ -77,7 +69,7 @@ module.exports = class UserService {
       answer
     );
 
-    return { status: 200, result: true, data: userCreateData };
+    return { status: 201, result: true, data: userCreateData };
   };
 
   checkEmail = async (email) => {
@@ -102,7 +94,9 @@ module.exports = class UserService {
       return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
     const user = await this.userRepository.findUserById(userId);
-    if (user.password !== password) {
+    const hashedPassword = user.password;
+    const comparePassword = await bcrypt.compare(password, hashedPassword);
+    if (!comparePassword) {
       return {
         status: 400,
         result: false,
@@ -205,22 +199,30 @@ module.exports = class UserService {
     }
 
     const pwExp = /^[a-zA-Z0-9]{4,30}$/;
+    let hashedPassword;
     if (!password) {
-      password = user.password;
+      hashedPassword = user.password;
     } else if (!pwExp.test(password)) {
       return {
         status: 400,
         result: false,
         message: "암호가 형식에 맞지 않습니다.",
       };
+    } else {
+      hashedPassword = await this.bcrypt.bcryptPassword(password);
     }
 
-    await this.userRepository.editUser(nickname, password, answer);
+    await this.userRepository.editUser(
+      nickname,
+      hashedPassword,
+      answer,
+      userId
+    );
 
     return { status: 201, result: true };
   };
 
-  lostPW = async (email, answer) => {
+  lostPW = async (email, answer, password) => {
     if (!eamil || !answer) {
       return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
@@ -233,15 +235,14 @@ module.exports = class UserService {
         message: "존재하지 않는 정보입니다.",
       };
     }
-
-    const newPassword = "123456789";
+    const hashedPassword = await this.bcrypt.bcryptPassword(password);
     const success = await this.userRepository.changePW(
       email,
       answer,
-      newPassword
+      hashedPassword
     );
 
-    return { status: 201, result: true, data: newPassword };
+    return { status: 201, result: true };
   };
 
   quit = async (userId, password) => {
@@ -257,14 +258,16 @@ module.exports = class UserService {
     if (!user) {
       console.log("회원탈퇴 후 접근 : ", userId);
       return {
-        status: 401,
+        status: 400,
         result: false,
         message: "존재하지 않는 정보입니다.",
       };
     }
-    if (user.password !== password) {
+    const hashedPassword = user.password;
+    const comparePassword = await bcrypt.compare(password, hashedPassword);
+    if (!comparePassword) {
       return {
-        status: 401,
+        status: 400,
         result: false,
         message: "암호가 올바르지 않습니다.",
       };
@@ -281,7 +284,7 @@ module.exports = class UserService {
     if (!user) {
       console.log("회원탈퇴 후 접근 : ", userId);
       return {
-        status: 401,
+        status: 400,
         result: false,
         message: "존재하지 않는 정보입니다.",
       };

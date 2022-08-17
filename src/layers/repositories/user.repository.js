@@ -13,7 +13,7 @@ module.exports = class UserRepository {
   };
 
   findUserById = async (userId) => {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({ where: { userId } });
 
     return user;
   };

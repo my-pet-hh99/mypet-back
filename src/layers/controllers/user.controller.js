@@ -36,6 +36,22 @@ module.exports = class UserController {
     const { userId } = res.locals;
 
     const response = await this.userService.checkPassword(userId, password);
+
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
+  };
+
+  lostPassword = async (req, res) => {
+    const { email, answer, newPassword } = req.body;
+
+    const response = await this.userService.lostPW(email, answer, newPassword);
+
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
   };
 
   login = async (req, res) => {
@@ -97,7 +113,10 @@ module.exports = class UserController {
       answer
     );
 
-    res.status();
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
   };
 
   quit = async (req, res) => {
@@ -105,5 +124,10 @@ module.exports = class UserController {
     const { password } = req.body;
 
     const response = await this.userService.quit(userId, password);
+
+    res.status(response.status).json({
+      result: response.result,
+      message: response.message,
+    });
   };
 };
