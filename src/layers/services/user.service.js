@@ -198,7 +198,8 @@ module.exports = class UserService {
       };
     }
 
-    const pwExp = /^[a-zA-Z0-9]{4,30}$/;
+    const pwExp =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
     let hashedPassword;
     if (!password) {
       hashedPassword = user.password;
@@ -223,7 +224,7 @@ module.exports = class UserService {
   };
 
   lostPW = async (email, answer, password) => {
-    if (!eamil || !answer) {
+    if (!email || !answer) {
       return { status: 400, result: false, message: "입력값이 비어 있습니다." };
     }
 
@@ -235,7 +236,20 @@ module.exports = class UserService {
         message: "존재하지 않는 정보입니다.",
       };
     }
-    const hashedPassword = await this.bcrypt.bcryptPassword(password);
+    const pwExp =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+    let hashedPassword;
+    if (!password) {
+      hashedPassword = user.password;
+    } else if (!pwExp.test(password)) {
+      return {
+        status: 400,
+        result: false,
+        message: "암호가 형식에 맞지 않습니다.",
+      };
+    } else {
+      hashedPassword = await this.bcrypt.bcryptPassword(password);
+    }
     const success = await this.userRepository.changePW(
       email,
       answer,

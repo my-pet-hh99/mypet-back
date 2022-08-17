@@ -1,4 +1,5 @@
 const { User, Session } = require("../../models");
+const { Op } = require("sequelize");
 
 module.exports = class UserRepository {
   createUser = async (email, nickname, password, answer) => {
@@ -20,7 +21,7 @@ module.exports = class UserRepository {
 
   findUserLogin = async (email, password) => {
     const user = await User.findOne({
-      where: { email, password },
+      where: { [Op.and]: [{ email }, { password }] },
     });
 
     return user;
@@ -35,7 +36,9 @@ module.exports = class UserRepository {
   };
 
   findPW = async (email, answer) => {
-    const user = await User.findOne({ wher: { email, answer } });
+    const user = await User.findOne({
+      where: { [Op.and]: [{ email }, { answer }] },
+    });
 
     return user;
   };
@@ -43,7 +46,7 @@ module.exports = class UserRepository {
   changePW = async (email, answer, password) => {
     const success = await User.update(
       { password },
-      { where: { email, answer } }
+      { where: { [Op.and]: [{ email }, { answer }] } }
     );
 
     return success;
@@ -52,7 +55,7 @@ module.exports = class UserRepository {
   editUser = async (nickname, password, answer, userId) => {
     const success = await User.update(
       { nickname, password, answer },
-      { where: userId }
+      { where: { userId } }
     );
 
     return success;
@@ -71,7 +74,9 @@ module.exports = class UserRepository {
   };
 
   findSession = async (userId, token) => {
-    const session = await Session.findOne({ where: { userId, token } });
+    const session = await Session.findOne({
+      where: { [Op.and]: [{ userId }, { token }] },
+    });
 
     return session;
   };
