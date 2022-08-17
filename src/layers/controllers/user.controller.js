@@ -44,9 +44,9 @@ module.exports = class UserController {
   };
 
   lostPassword = async (req, res) => {
-    const { email, answer, newPassword } = req.body;
+    const { email, answer, password } = req.body;
 
-    const response = await this.userService.lostPW(email, answer, newPassword);
+    const response = await this.userService.lostPW(email, answer, password);
 
     res.status(response.status).json({
       result: response.result,
