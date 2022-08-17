@@ -4,8 +4,8 @@
 | 설명              | 경로                            | Body 유무 |  Bearer 토큰 필요 | 담당자 |
 | :---------------  | :----------------------------- | :-------- | :---------------- | :---- |
 | 로그인 요청       | POST /api/user/login            | O         | -                |  |
-| 회원가입          | POST /api/user/signup           | O         | -                |  | @hanbae-Lee |
-| 아이디 중복 검사  | GET /api/user/idCheck/:username | O         | -                |  | @hanbae-Lee |
+| 회원가입          | POST /api/user/signup           | O         | -                |  | @hanbaek-Lee |
+| 아이디 중복 검사  | GET /api/user/idCheck/:username | O         | -                |  | @hanbaek-Lee |
 | 액세스 토큰 발급  | POST /api/user/token            | -         | -                |  |
 | 로그아웃          | GET /api/user/logout            | -         | -                |  |
 | 사진 업로드       | POST /api/image                 | O         | O                |  |
