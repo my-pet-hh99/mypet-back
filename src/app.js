@@ -1,6 +1,8 @@
 const express = require("express");
 const { sequelize } = require("./models");
 const cors = require("cors");
+const morgan = require("morgan");
+
 const app = express();
 const port = 3000;
 
@@ -16,7 +18,8 @@ const corsOptions = {
   },
 };
 
-// app.use(cors(corsOptions));
+app.use(morgan("dev"));
+//app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
