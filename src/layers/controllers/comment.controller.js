@@ -23,6 +23,12 @@ module.exports = class CommentController {
         postId,
         text
       );
+      let statuscode = "";
+      let message = "";
+      if (comment.message) {
+        [statuscode, message] = comment.message.split(",");
+        return res.status(statuscode).json({ result: false, message: message });
+      }
       return res.status(201).json(comment);
     } catch (err) {
       console.log(err);
@@ -39,7 +45,13 @@ module.exports = class CommentController {
         .validateAsync({ postId });
 
       const comment = await this.commentService.getComment(postId);
-      return res.status(201).json(comment);
+      let statuscode = "";
+      let message = "";
+      if (comment.message) {
+        [statuscode, message] = comment.message.split(",");
+        return res.status(statuscode).json({ result: false, message: message });
+      }
+      return res.status(200).json(comment);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ result: false, message: err.message });
@@ -64,6 +76,12 @@ module.exports = class CommentController {
         commentId,
         text
       );
+      let statuscode = "";
+      let message = "";
+      if (comment.message) {
+        [statuscode, message] = comment.message.split(",");
+        return res.status(statuscode).json({ result: false, message: message });
+      }
       return res.status(201).json(comment);
     } catch (err) {
       console.log(err);
@@ -86,6 +104,12 @@ module.exports = class CommentController {
         userId,
         commentId
       );
+      let statuscode = "";
+      let message = "";
+      if (comment.message) {
+        [statuscode, message] = comment.message.split(",");
+        return res.status(statuscode).json({ result: false, message: message });
+      }
       return res.status(201).json(comment);
     } catch (err) {
       console.log(err);

@@ -28,4 +28,4 @@ userRouter
   .delete(auth, userController.quit); // 회원 탈퇴
 userRouter.get("/pwCheck", auth, userController.checkPassword);
 
-module.exports = router;
+module.exports = userRouter;
