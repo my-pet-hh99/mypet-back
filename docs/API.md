@@ -5,12 +5,13 @@
 | :---------------  | :----------------------------- | :-------- | :---------------- | :---- |
 | 로그인 요청       | POST /api/user/login            | O         | -                | @soularofdawn |
 | 회원가입          | POST /api/user/signup           | O         | -                | @hanbaek-Lee |
-| 아이디 중복 검사  | GET /api/user/idCheck/:username | O         | -                | @hanbaek-Lee |
+| 이메일 중복 검사  | GET /api/user/idCheck/:email    | O         | -                | @hanbaek-Lee |
 | 액세스 토큰 발급  | POST /api/user/token            | -         | -                | @soularofdawn |
-| 로그아웃          | GET /api/user/logout            | -         | -                | @soularofdawn |
+| 로그아웃          | DELETE /api/user/logout        | -         | -                | @soularofdawn |
 | 회원 정보 조회    | GET /api/user/me                | -         | O                | @soularofdawn |
 | 회원 정보 수정    | PUT /apu/user/edit              | O         | O                | @soularofdawn |
 | 회원 탈퇴         | GET /api/user/quit              | O         | O                | @soularofdawn|
+| 암호 확인         | GET /api/user/pwCheck/:password | -         | O                | @soularofdawn
 | 사진 업로드       | POST /api/image                 | O         | O                |  |
 | 게시글 작성       | POST /api/post                  | O         | O                | @oddythecreative |
 | 게시글 전체 조회  | GET /api/post?offset=(0,1,2...) | -         | -                |  @oddythecreative |
