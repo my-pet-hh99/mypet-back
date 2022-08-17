@@ -23,6 +23,7 @@ module.exports = class CommentController {
         postId,
         text
       );
+      console.log(comment.message);
       return res.status(201).json(comment);
     } catch (err) {
       console.log(err);
@@ -39,7 +40,7 @@ module.exports = class CommentController {
         .validateAsync({ postId });
 
       const comment = await this.commentService.getComment(postId);
-      return res.status(201).json(comment);
+      return res.status(200).json(comment);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ result: false, message: err.message });
