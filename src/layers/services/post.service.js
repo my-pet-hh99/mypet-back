@@ -8,22 +8,21 @@ class PostService {
   findAllPost = async (offset) => {
     const allPost = await this.postRepository.findAllPost(offset);
 
-    return allPost
-      .map((post) => {
-        return {
-          postId: post.postId,
-          imageUrl:
-            "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
-            post.imageUrl,
-          text: post.text,
-          author: post.User.nickname,
-          createdAt: post.createdAt,
-          updatedAt: post.updatedAt,
-        };
-      })
-      .sort((a, b) => {
-        return b.postId - a.postId;
-      });
+    return allPost.map((post) => {
+      return {
+        postId: post.postId,
+        imageUrl:
+          "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
+          post.imageUrl,
+        text: post.text,
+        author: post.User.nickname,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    });
+    // .sort((a, b) => {
+    //   return b.postId - a.postId;
+    // });
   };
 
   findPostById = async (postId) => {
