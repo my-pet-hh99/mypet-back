@@ -10,8 +10,7 @@ module.exports = class CommentService {
   createComment = async (userId, postId, text) => {
     try {
       const user = await this.userRepository.findUserById(userId);
-      //if (user === null)
-      throw new Error("400,존재하지 않는 ,사용자입니다.");
+      if (user === null) throw new Error("400,존재하지 않는 ,사용자입니다.");
 
       const isExistPost = await this.postRepository.findPostById(postId);
 
