@@ -1,5 +1,5 @@
 const { User, Session } = require("../../models");
-
+const { Op } = require("sequelize");
 
 module.exports = class UserRepository {
   createUser = async (email, nickname, password, answer) => {
@@ -14,20 +14,14 @@ module.exports = class UserRepository {
   };
 
   findUserById = async (userId) => {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({ where: { userId } });
 
     return user;
   };
 
-  findUserbyEmail = async (email) => {
-    const user = await User.findOne({
-      where: { email },
-    });
-  };
-
   findUserLogin = async (email, password) => {
     const user = await User.findOne({
-      where: { email, password },
+      where: { [Op.and]: [{ email }, { password }] },
     });
 
     return user;
@@ -41,16 +35,34 @@ module.exports = class UserRepository {
     return user;
   };
 
-  // findUserByNN = async (nickname) => {
-  //   const user = await User.findOne({
-  //     where: { nickname },
-  //   });
+  findPW = async (email, answer) => {
+    const user = await User.findOne({
+      where: { [Op.and]: [{ email }, { answer }] },
+    });
 
-  //   return user;
-  // };
+    return user;
+  };
+
+  changePW = async (email, answer, password) => {
+    const success = await User.update(
+      { password },
+      { where: { [Op.and]: [{ email }, { answer }] } }
+    );
+
+    return success;
+  };
+
+  editUser = async (nickname, password, answer, userId) => {
+    const success = await User.update(
+      { nickname, password, answer },
+      { where: { userId } }
+    );
+
+    return success;
+  };
 
   deleteUser = async (userId) => {
-    const success = await User.destroy({ where: userId });
+    const success = await User.destroy({ where: { userId } });
 
     return success;
   };
@@ -62,19 +74,21 @@ module.exports = class UserRepository {
   };
 
   findSession = async (userId, token) => {
-    const session = await Session.findOne({ where: userId, token });
+    const session = await Session.findOne({
+      where: { [Op.and]: [{ userId }, { token }] },
+    });
 
     return session;
   };
 
   findSessionByUserId = async (userId) => {
-    const session = await Session.findOne({ where: userId });
+    const session = await Session.findOne({ where: { userId } });
 
     return session;
   };
 
   deleteSession = async (sessionId) => {
-    const success = await Session.destroy({ where: sessionId });
+    const success = await Session.destroy({ where: { sessionId } });
 
     return success;
   };

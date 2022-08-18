@@ -7,89 +7,91 @@ module.exports = class CommentService {
   postRepository = new PostRepository();
   userRepository = new UserRepository();
 
-
   createComment = async (userId, postId, text) => {
-
     try {
-
       const user = await this.userRepository.findUserById(userId);
-      if (user === null) throw new Error('없는 사용자입니다.');
+      if (user === null) throw new Error("400,존재하지 않는 ,사용자입니다.");
 
-      //const isExistPost = await this.postRepository.isExistPost()
+      const isExistPost = await this.postRepository.findPostById(postId);
 
-      const isCreated = await this.commentRepository.createComment(userId, postId, text);
-      if (isCreated.result === false) throw new Error('댓글 작성에 실패하였습니다.');
+      const isCreated = await this.commentRepository.createComment(
+        userId,
+        postId,
+        text
+      );
+      if (isCreated.result === false)
+        throw new Error("400,댓글 작성에 실패하였습니다.");
 
-      // const comment = await this.commentRepository.getComment(postId);
-      // if (comment.result === false) throw new Error('댓글은 작성되었으나 댓글 목록 조회에 실패하였습니다.');
-
-      //return { result : isCreated.result, data : comment.data};
-      return { result : isCreated.result };
-      
-    } catch(err){
-
-      console.log(err);
-      return { result: false, message : err.message };
-
+      return { result: isCreated.result };
+    } catch (err) {
+      return { result: false, message: err.message };
     }
   };
 
   getComment = async (postId) => {
     try {
-
-      //const isExistPost = await this.postRepository.isExistPost()
-
       const comment = await this.commentRepository.getComment(postId);
-      if (comment.result === false) throw new Error('댓글 목록 조회에 실패하였습니다.');
-      return { result : comment.result };
-      
-      
-    } catch(err){
-
+      if (comment.result === false)
+        throw new Error("400,댓글 목록 조회에 실패하였습니다.");
+      const commentdata = comment.data.map((data) => {
+        return {
+          commentId: data.commentId,
+          text: data.text,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          userId: data.userId,
+          postId: data.postId,
+          author: data["User.nickname"],
+        };
+      });
+      return { result: comment.result, data: commentdata };
+    } catch (err) {
       console.log(err);
-      return { result : false, message : err.message };
-
+      return { result: false, message: err.message };
     }
-
   };
 
   updateComment = async (userId, commentId, text) => {
-
     try {
+      const user = await this.userRepository.findUserById(userId);
+      if (user === null) throw new Error("400,존재하지 않는 사용자입니다.");
 
-      const isExistComment = await this.commentRepository.isExistComment(commentId);
-      if (isExistComment === null) throw new Error('해당 댓글이 존재하지 않습니다');
+      const comment = await this.commentRepository.getCommentById(commentId);
+      if (comment === null)
+        throw new Error("404,해당 댓글이 존재하지 않습니다.");
+      else if (userId !== comment.userId)
+        throw new Error("401,권한이 없는 사용자입니다.");
 
-      const comment = await this.commentRepository.updateComment(commentId, text);
-      if (comment.result === false) throw new Error('댓글 수정에 실패하엿습니다.');
-      return { result : comment.result };
-      
-      
-    } catch(err){
-
+      const isUpdated = await this.commentRepository.updateComment(
+        commentId,
+        text
+      );
+      if (isUpdated.result === false)
+        throw new Error("400,댓글 수정에 실패하엿습니다.");
+      return { result: isUpdated.result };
+    } catch (err) {
       console.log(err);
-      return { result : false, message : err.message };
-
+      return { result: false, message: err.message };
     }
-
   };
   deleteComment = async (userId, commentId) => {
-
     try {
+      const user = await this.userRepository.findUserById(userId);
+      if (user === null) throw new Error("400,존재하지 않는 사용자입니다.");
 
-      const isExistComment = await this.commentRepository.isExistComment(commentId);
-      if (isExistComment === null) throw new Error('해당 댓글이 존재하지 않습니다.');
+      const comment = await this.commentRepository.getCommentById(commentId);
+      if (comment === null)
+        throw new Error("404,해당 댓글이 존재하지 않습니다.");
+      else if (userId !== comment.userId)
+        throw new Error("401,권한이 없는 사용자입니다.");
 
-      const comment = await this.commentRepository.deleteComment(commentId);
-      if (comment.result === false) throw new Error('댓글 삭제에 실패하엿습니다.');
-      return { result : comment.result };
-      
-    } catch(err){
-
+      const isDeleted = await this.commentRepository.deleteComment(commentId);
+      if (isDeleted.result === false)
+        throw new Error("400,댓글 삭제에 실패하엿습니다.");
+      return { result: isDeleted.result };
+    } catch (err) {
       console.log(err);
-      return { result : false, message : err.message };
-
+      return { result: false, message: err.message };
     }
-
   };
 };

@@ -1,3 +1,4 @@
+const e = require("express");
 const { text } = require("express");
 const PostRepository = require("../repositories/post.repository");
 
@@ -7,42 +8,81 @@ class PostService {
   findAllPost = async (offset) => {
     const allPost = await this.postRepository.findAllPost(offset);
 
-    return allPost.map(post => {
+    return allPost.map((post) => {
       return {
         postId: post.postId,
-        imageUrl: post.imageUrl,
+        imageUrl:
+          "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
+          post.imageUrl,
         text: post.text,
         author: post.User.nickname,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
-      }
-    })
-  }
+      };
+    });
+  };
+
+  findPostById = async (postId) => {
+    try {
+      const post = await this.postRepository.findPostById(postId);
+
+      return {
+        postId: post.postId,
+        imageUrl:
+          "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
+          post.imageUrl,
+        text: post.text,
+        author: post.User.nickname,
+        userId: post.User.userId,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    } catch (err) {
+      console.error(err);
+
+      return;
+    }
+  };
+
   createPost = async (userId, imageUrl, text) => {
-    const createPostData = await this.postRepository.createPost(userId, imageUrl, text);
+    const createPostData = await this.postRepository.createPost(
+      userId,
+      imageUrl,
+      text
+    );
 
     return {
-      result: true
+      result: true,
     };
-  }
+  };
 
-  updatePost = async (postId, text) => {
-    const updatePostData = await this.postRepository.updatePost(postId, text)
+  updatePost = async (postId, imageUrl, text) => {
+    try {
+      const updatePostData = await this.postRepository.updatePost(
+        postId,
+        imageUrl,
+        text
+      );
 
-    return {
-      result: true
+      return updatePostData;
+    } catch (err) {
+      console.error(err);
+
+      return;
     }
-  }
+  };
 
-  deletePost = async (postId) => {
-    const deletePostData = await this.postRepository.deletePost(postId)
+  deletePost = async (userId, postId) => {
+    try {
+      const deletePostData = await this.postRepository.deletePost(postId);
 
-    return {
-      result: true
+      return deletePostData;
+    } catch (err) {
+      console.error(err);
+
+      return;
     }
-  }
-
-  
+  };
 }
 
-module.exports =  PostService;
+module.exports = PostService;
