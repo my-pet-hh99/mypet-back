@@ -12,13 +12,13 @@ const hasToken = require("../../middlewares/hasToken.middleware");
 
 // 회원가입
 userRouter.post("/signup", hasToken, userController.signup);
-userRouter.get("/idCheck", hasToken, userController.checkEmail);
+userRouter.get("/email", hasToken, userController.checkEmail);
 
 // 로그인 & 로그아웃 & 토큰 재발급
 userRouter.post("/login", hasToken, userController.login);
 userRouter.post("/token", needRefresh, userController.reIssue);
 userRouter.delete("/logout", needRefresh, userController.logout);
-userRouter.post("/lostPassword", userController.lostPassword);
+userRouter.patch("/password", userController.lostPassword);
 
 // 개인페이지
 userRouter
@@ -26,6 +26,6 @@ userRouter
   .get(auth, userController.me) // 회원 정보 조회
   .put(auth, userController.edit) // 회원 정보 수정
   .delete(auth, userController.quit); // 회원 탈퇴
-userRouter.get("/pwCheck", auth, userController.checkPassword);
+userRouter.get("/me/password", auth, userController.checkPassword);
 
 module.exports = userRouter;
