@@ -1,99 +1,120 @@
 const CommentService = require("../services/comment.service");
-const joi = require('joi');
+const joi = require("joi");
 
 module.exports = class CommentController {
   commentService = new CommentService();
 
   createComment = async (req, res, next) => {
-    
     const { postId } = req.params;
     const { text } = req.body;
     const { userId } = res.locals;
 
     try {
+      await joi
+        .object({
+          userId: joi.number().required(),
+          postId: joi.number().required(),
+          text: joi.string().max(150).required(),
+        })
+        .validateAsync({ postId, userId, text });
 
-      await joi.object({
-        userId : joi.number().required(),
-        postId : joi.number().required(),
-        text : joi.string().max(150).required()
+      const comment = await this.commentService.createComment(
+        userId,
+        postId,
+        text
+      );
 
-      }).validateAsync({ postId, userId, text });
-
-      const comment = await this.commentService.createComment(userId, postId, text);
+      if (comment.message) {
+        const [statuscode, ...message] = comment.message.split(",");
+        return res
+          .status(statuscode)
+          .json({ result: false, message: message.join("") });
+      }
       return res.status(201).json(comment);
-
-    } catch(err){
+    } catch (err) {
       console.log(err);
-      return res.status(400).json({ result : false, message : err.message });
+      return res.status(400).json({ result: false, message: err.message });
     }
-
   };
   getComment = async (req, res, next) => {
-
     const { postId } = req.params;
     try {
-
-      await joi.object({
-        postId : joi.number().required(),
-
-      }).validateAsync({ postId});
+      await joi
+        .object({
+          postId: joi.number().required(),
+        })
+        .validateAsync({ postId });
 
       const comment = await this.commentService.getComment(postId);
-      return res.status(201).json(comment) ;
-
-    } catch(err){
+      if (comment.message) {
+        const [statuscode, ...message] = comment.message.split(",");
+        return res
+          .status(statuscode)
+          .json({ result: false, message: message.join("") });
+      }
+      return res.status(200).json(comment);
+    } catch (err) {
       console.log(err);
-      return res.status(400).json({ result : false, message : err.message});
+      return res.status(400).json({ result: false, message: err.message });
     }
-
-
   };
   updateComment = async (req, res, next) => {
-
     const { commentId } = req.params;
     const { text } = req.body;
     const { userId } = res.locals;
 
     try {
+      await joi
+        .object({
+          userId: joi.number().required(),
+          commentId: joi.number().required(),
+          text: joi.string().max(150).required(),
+        })
+        .validateAsync({ commentId, userId, text });
 
-      await joi.object({
-        userId : joi.number().required(),
-        commentId : joi.number().required(),
-        text : joi.string().max(150).required()
-
-      }).validateAsync({ commentId, userId, text });
-
-      const comment = await this.commentService.updateComment(userId, commentId, text);
-      return res.status(201).json( comment);
-
-    } catch(err){
+      const comment = await this.commentService.updateComment(
+        userId,
+        commentId,
+        text
+      );
+      if (comment.message) {
+        const [statuscode, ...message] = comment.message.split(",");
+        return res
+          .status(statuscode)
+          .json({ result: false, message: message.join("") });
+      }
+      return res.status(201).json(comment);
+    } catch (err) {
       console.log(err);
-      return res.status(400).json({ result : false, message : err.message});
+      return res.status(400).json({ result: false, message: err.message });
     }
-
-
   };
   deleteComment = async (req, res, next) => {
-
     const { commentId } = req.params;
     const { userId } = res.locals;
 
     try {
+      await joi
+        .object({
+          userId: joi.number().required(),
+          commentId: joi.number().required(),
+        })
+        .validateAsync({ commentId, userId });
 
-      await joi.object({
-        userId : joi.number().required(),
-        commentId : joi.number().required(),
-
-      }).validateAsync({ commentId, userId });
-
-      const comment = await this.commentService.deleteComment(userId, commentId);
+      const comment = await this.commentService.deleteComment(
+        userId,
+        commentId
+      );
+      if (comment.message) {
+        const [statuscode, ...message] = comment.message.split(",");
+        return res
+          .status(statuscode)
+          .json({ result: false, message: message.join("") });
+      }
       return res.status(201).json(comment);
-
-    } catch(err){
+    } catch (err) {
       console.log(err);
-      return res.status(400).json({ result : false, message : err.message});
+      return res.status(400).json({ result: false, message: err.message });
     }
-
   };
-
 };

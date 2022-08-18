@@ -1,27 +1,31 @@
 const express = require("express");
-const router = express.Router();
+const userRouter = express.Router();
 
 const UserController = require("../controllers/user.controller");
 const userController = new UserController();
 
 const needRefresh = require("../../middlewares/refresh.middleware");
 const auth = require("../../middlewares/auth.middleware");
+const hasToken = require("../../middlewares/hasToken.middleware");
 
 // http://localhost:3000/api/user]
 
 // 회원가입
-router.post("/signup", userController.signup);
-router.get("/idCheck", userController.checkEmail);
+userRouter.post("/signup", hasToken, userController.signup);
+userRouter.get("/idCheck", hasToken, userController.checkEmail);
 
 // 로그인 & 로그아웃 & 토큰 재발급
-router.post("/login", userController.login);
-router.post("/token", needRefresh, userController.reIssue);
-router.delete("/logout", needRefresh, userController.logout);
+userRouter.post("/login", hasToken, userController.login);
+userRouter.post("/token", needRefresh, userController.reIssue);
+userRouter.delete("/logout", needRefresh, userController.logout);
+userRouter.post("/lostPassword", userController.lostPassword);
 
 // 개인페이지
-router.get("/me", auth, userController.me);
-router.put("/edit", auth, userController.edit);
-router.get("/quit", auth, userController.quit);
-router.get("/pwCheck", auth, userController.checkPassword);
+userRouter
+  .route("/me")
+  .get(auth, userController.me) // 회원 정보 조회
+  .put(auth, userController.edit) // 회원 정보 수정
+  .delete(auth, userController.quit); // 회원 탈퇴
+userRouter.get("/pwCheck", auth, userController.checkPassword);
 
-module.exports = router;
+module.exports = userRouter;
