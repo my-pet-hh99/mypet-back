@@ -1,5 +1,6 @@
 # mypet-back
 
+## 시연 영상(이미지 Ctrl+클릭 시 새창으로 이동)
 [![Video Label](http://img.youtube.com/vi/nOXyEW4mpo8/0.jpg)](https://youtu.be/nOXyEW4mpo8)
 
 ## [API 명세서](./docs/API.md)
