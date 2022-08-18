@@ -1,5 +1,6 @@
 const e = require("express");
 const { text } = require("express");
+require("dotenv/config");
 const PostRepository = require("../repositories/post.repository");
 
 class PostService {
@@ -11,9 +12,7 @@ class PostService {
     return allPost.map((post) => {
       return {
         postId: post.postId,
-        imageUrl:
-          "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
-          post.imageUrl,
+        imageUrl: process.env.S3_URL + post.imageUrl,
         text: post.text,
         author: post.User.nickname,
         createdAt: post.createdAt,
@@ -28,9 +27,7 @@ class PostService {
 
       return {
         postId: post.postId,
-        imageUrl:
-          "https://mypet-upload-image.s3.ap-northeast-2.amazonaws.com/" +
-          post.imageUrl,
+        imageUrl: process.env.S3_URL + post.imageUrl,
         text: post.text,
         author: post.User.nickname,
         userId: post.User.userId,
