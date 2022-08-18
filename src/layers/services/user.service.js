@@ -62,14 +62,14 @@ module.exports = class UserService {
 
     const hashedPassword = await this.bcrypt.bcryptPassword(password);
 
-    const userCreateData = await this.userRepository.createUser(
+    await this.userRepository.createUser(
       email,
       nickname,
       hashedPassword,
       answer
     );
 
-    return { status: 201, result: true, data: userCreateData };
+    return { status: 201, result: true };
   };
 
   checkEmail = async (email) => {

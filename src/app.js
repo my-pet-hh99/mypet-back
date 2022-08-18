@@ -6,7 +6,11 @@ const morgan = require("morgan");
 const app = express();
 const port = 3000;
 
-const whitelist = ["127.0.0.1:8080"];
+const whitelist = [
+  "http://somfist.shop",
+  "http://somfist.shop.s3-website.ap-northeast-2.amazonaws.com",
+];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -19,7 +23,8 @@ const corsOptions = {
 };
 
 app.use(morgan("dev"));
-//app.use(cors(corsOptions));
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
