@@ -11,19 +11,19 @@ const whitelist = [
   "http://somfist.shop.s3-website.ap-northeast-2.amazonaws.com",
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log(origin);
-      callback(new Error("Not Allowed Origin!"));
-    }
-  },
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       console.log(origin);
+//       callback(new Error("Not Allowed Origin!"));
+//     }
+//   },
+// };
 
 app.use(morgan("dev"));
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
