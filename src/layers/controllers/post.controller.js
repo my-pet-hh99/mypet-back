@@ -4,9 +4,15 @@ class PostController {
   postService = new PostService();
 
   getPosts = async (req, res, next) => {
-    let offset = Number(req.query.offset) * 3 + 1
-    const posts = await this.postService.findAllPost(offset);
+    let offset = Number(req.query.offset) * 3 + 1;
+    let posts;
 
+    try {
+      posts = await this.postService.findAllPost(offset);
+    } catch (err) {
+      console.error(err.message);
+    }
+    
     res.status(200).json({posts});
   }
 
@@ -20,7 +26,7 @@ class PostController {
   createPost = async (req, res, next) => {
     const {imageUrl, text } = req.body;
     let userId = res.locals.userId;
-
+    
     const createPostData = await this.postService.createPost(userId, imageUrl, text);
 
     res.status(201).json({ data: createPostData });
