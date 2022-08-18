@@ -20,9 +20,6 @@ class PostService {
         updatedAt: post.updatedAt,
       };
     });
-    // .sort((a, b) => {
-    //   return b.postId - a.postId;
-    // });
   };
 
   findPostById = async (postId) => {
