@@ -5,10 +5,16 @@ class PostController {
 
   getPosts = async (req, res, next) => {
     let offset = Number(req.query.offset) * 3 + 1;
-    const posts = await this.postService.findAllPost(offset);
+    let posts;
 
-    res.status(200).json({ posts });
-  };
+    try {
+      posts = await this.postService.findAllPost(offset);
+    } catch (err) {
+      console.error(err.message);
+    }
+    
+    res.status(200).json({posts});
+  }
 
   getPostById = async (req, res, next) => {
     const postId = Number(req.params.postId);
