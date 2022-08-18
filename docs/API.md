@@ -3,7 +3,7 @@
 
 | 설명              | 경로                            | Body 유무 |  Bearer 토큰 필요 | 담당자 |
 | :---------------  | :----------------------------- | :-------- | :---------------- | :---- |
-| 로그인 요청       | POST /api/user/login            | O         | -                | @soularofdawn |
+| 로그인 요청       | POST /api/user/login            | O         | -                | @soularofdawn @codeing999 |
 | 회원가입          | POST /api/user/signup           | O         | -                | @hanbaek-Lee |
 | 이메일 중복 검사  | GET /api/user/email/?email=| -         | -                | @hanbaek-Lee |
 | 액세스 토큰 재발급| POST /api/user/token            | -         | -                | @soularofdawn |
