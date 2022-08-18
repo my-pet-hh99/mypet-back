@@ -8,7 +8,7 @@ class PostService {
   findAllPost = async (offset) => {
     const allPost = await this.postRepository.findAllPost(offset);
 
-    return allPost.map(post => {
+    return allPost.map((post) => {
       return {
         postId: post.postId,
         imageUrl: post.imageUrl,
@@ -16,14 +16,14 @@ class PostService {
         author: post.User.nickname,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
-      }
-    })
-  }
+      };
+    });
+  };
 
   findPostById = async (postId) => {
     try {
       const post = await this.postRepository.findPostById(postId);
-      
+
       return {
         postId: post.postId,
         imageUrl: post.imageUrl,
@@ -33,45 +33,52 @@ class PostService {
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
       };
-    } catch(err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
 
       return;
     }
-  }
+  };
 
   createPost = async (userId, imageUrl, text) => {
-    const createPostData = await this.postRepository.createPost(userId, imageUrl, text);
+    const createPostData = await this.postRepository.createPost(
+      userId,
+      imageUrl,
+      text
+    );
 
     return {
-      result: true
+      result: true,
     };
-  }
+  };
 
   updatePost = async (postId, imageUrl, text) => {
     try {
-      const updatePostData = await this.postRepository.updatePost(postId, imageUrl, text)
+      const updatePostData = await this.postRepository.updatePost(
+        postId,
+        imageUrl,
+        text
+      );
 
-    
       return updatePostData;
     } catch (err) {
       console.error(err);
 
       return;
     }
-  }
+  };
 
   deletePost = async (userId, postId) => {
     try {
-      const deletePostData = await this.postRepository.deletePost(postId)
-  
+      const deletePostData = await this.postRepository.deletePost(postId);
+
       return deletePostData;
     } catch (err) {
       console.error(err);
 
       return;
     }
-  }  
+  };
 }
 
-module.exports =  PostService;
+module.exports = PostService;
