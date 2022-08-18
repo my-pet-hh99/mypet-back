@@ -4,7 +4,7 @@ class PostController {
   postService = new PostService();
 
   getPosts = async (req, res, next) => {
-    let offset = Number(req.query.offset) * 3 + 1;
+    let offset = Number(req.query.offset) * 3;
     let posts;
 
     try {
@@ -12,9 +12,9 @@ class PostController {
     } catch (err) {
       console.error(err.message);
     }
-    
-    res.status(200).json({posts});
-  }
+
+    res.status(200).json({ posts });
+  };
 
   getPostById = async (req, res, next) => {
     const postId = Number(req.params.postId);

@@ -12,6 +12,7 @@ class PostRepository {
       ],
       limit: 3,
       offset: offset,
+      order: [["createdAt", "DESC"]],
     });
 
     return posts;
