@@ -1,6 +1,6 @@
 # mypet-back
 
-[![](http://imgyoutube.com/vi/'nOXyEW4mpo8'/0.jpg)](https://youtu.be/nOXyEW4mpo8')
+[![Video Label](http://imgyoutube.com/vi/'nOXyEW4mpo8'/0.jpg)](https://youtu.be/nOXyEW4mpo8')
 
 ## [API 명세서](./docs/API.md)
 ## [ERD](./docs/ERD.md)
