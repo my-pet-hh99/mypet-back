@@ -26,7 +26,7 @@ root
 ```
 
 ## 프로젝트 팀원
-- @soularofdawn
+- @ryeong25
 - @codeing999
 - @hanbaek-Lee
 - @oddythecreative
